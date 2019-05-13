@@ -1,12 +1,16 @@
 import {createServer} from './server';
+import {createApplication} from './application';
 
 async function init() {
-  const app = createServer();
+  const app = createApplication();
 
-  // TODO config from file
-  const config = {port: 7430};
-  app.listen(config.port);
+  const appSrv = createServer(app);
 
-  console.log('Server running on port ' + config.port);
+  appSrv.listen(app.config.port);
+
+  console.log('Server running on port ' + app.config.port);
 
 }
+
+// noinspection JSIgnoredPromiseFromCall
+init();
