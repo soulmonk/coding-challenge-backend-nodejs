@@ -1,0 +1,14 @@
+{
+  "port": 7430,
+
+  "db": {
+    "database": "challenge",
+    "username": "postgres",
+    "password": "root",
+    "params": {
+      "host": "127.0.0.1",
+      "dialect": "postgres",
+      "operatorsAliases": false
+    }
+  }
+}
