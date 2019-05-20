@@ -1,7 +1,31 @@
 import * as Joi from 'joi';
 import {Context} from 'koa';
 import {IMiddleware} from 'koa-router';
-import {FieldValidationError} from '../errors';
+
+export class FieldValidationError extends Error {
+  public fields: FieldError[];
+  public error: Error;
+
+  constructor(message: string, fields: FieldError[], error?: Error) {
+    super(message);
+
+    this.fields = fields;
+    this.error = error;
+  }
+
+  public toModel() {
+    return {
+      message: this.message,
+      fields: this.fields
+    };
+  }
+}
+
+export interface FieldError {
+  message: string
+  type: string
+  path: string[]
+}
 
 export interface SchemaMap {
   params?: { [key: string]: Joi.SchemaLike }

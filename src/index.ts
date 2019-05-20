@@ -1,14 +1,30 @@
+import {DBConnection} from 'models/index';
+import {Dialect} from 'sequelize';
 import {createServer} from './server';
-import {createApplication} from './application';
+import {TConfiguration} from './configuration';
 
 async function init() {
-  const app = createApplication();
+  const config: TConfiguration = {
+    server: {
+      port: 52300
+    },
+    db: {
+      'database': 'challenge',
+      'username': 'postgres',
+      'password': 'root',
+      'options': {
+        'host': '127.0.0.1',
+        'dialect': 'postgres' as Dialect
+      }
+    }
+  };
 
-  const appSrv = createServer(app);
+  DBConnection.init(config.db);
 
-  appSrv.listen(app.config.port);
+  const server = createServer(config.server);
+  server.listen();
 
-  console.log('Server running on port ' + app.config.port);
+  console.log('Server running on port ' + config.server.port);
 
 }
 
