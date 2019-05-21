@@ -1,16 +1,14 @@
 import {DataTypes, Model, Sequelize} from 'sequelize';
-import {ModelInit} from '@models/model-init';
+import {BaseModel} from './base-model';
 
-export class Case extends Model {
+export class Case extends BaseModel  {
   public id!: number; // Note that the `null assertion` `!` is required in strict mode.
 
   // timestamps!
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
-}
 
-export class CaseInit extends ModelInit {
-  build() {
+  public static Init(sequelize: Sequelize) {
     const attributes = {
       id: {
         type: DataTypes.INTEGER,
@@ -21,7 +19,7 @@ export class CaseInit extends ModelInit {
 
     const options = {
       tableName: 'cases',
-      sequelize: this.sequelize
+      sequelize
     };
 
     Case.init(attributes, options);

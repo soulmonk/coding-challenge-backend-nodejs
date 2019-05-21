@@ -17,6 +17,9 @@
       "@server/*": [
         "src/server/*"
       ],
+      "@services/*": [
+        "src/services/*"
+      ],
       "*": [
         "node_modules/*"
       ]

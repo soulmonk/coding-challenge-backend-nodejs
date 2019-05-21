@@ -1,20 +1,13 @@
 import {Sequelize} from 'sequelize';
-import {PoliceInit} from './Police';
-import {CaseInit} from './Case';
+import {BaseModel} from './base-model';
+import {Case} from './Case';
 import {TDBConfiguration} from './configuration';
-import {ModelInit} from '@models/model-init';
+import {Police} from './Police';
 
 let dbConnection: DBConnection = null;
 
 export class DBConnection {
   sequelize: Sequelize;
-
-  private constructor(config: TDBConfiguration) {
-    const {database, username, password, options} = config;
-    this.sequelize = new Sequelize(database, username, password, options);
-
-    this.createModels();
-  }
 
   static init(config: TDBConfiguration): DBConnection {
     if (!dbConnection) {
@@ -27,19 +20,11 @@ export class DBConnection {
     return dbConnection;
   }
 
-  private createModels() {
-    const models = [
-      new PoliceInit(this.sequelize),
-      new CaseInit(this.sequelize)
-    ];
+  private constructor(config: TDBConfiguration) {
+    const {database, username, password, options} = config;
+    this.sequelize = new Sequelize(database, username, password, options);
 
-    models.forEach((inst: ModelInit) => {
-      inst.build();
-    });
-
-    models.forEach(inst => {
-      inst.associate();
-    });
+    this.createModels();
   }
 
   async closeDatabase() {
@@ -49,5 +34,20 @@ export class DBConnection {
 
   sync() {
     this.sequelize.sync({force: false});
+  }
+
+  private createModels() {
+    const models = [
+      Police,
+      Case
+    ];
+
+    models.forEach((inst: typeof BaseModel) => {
+      inst.Init(this.sequelize);
+    });
+
+    models.forEach((inst: typeof BaseModel) => {
+      inst.associate();
+    });
   }
 }

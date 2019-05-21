@@ -3,10 +3,10 @@ import {Context} from 'koa';
 import {IMiddleware} from 'koa-router';
 
 export class FieldValidationError extends Error {
-  public fields: FieldError[];
+  public fields: IFieldError[];
   public error: Error;
 
-  constructor(message: string, fields: FieldError[], error?: Error) {
+  constructor(message: string, fields: IFieldError[], error?: Error) {
     super(message);
 
     this.fields = fields;
@@ -21,31 +21,31 @@ export class FieldValidationError extends Error {
   }
 }
 
-export interface FieldError {
-  message: string
-  type: string
-  path: string[]
+export interface IFieldError {
+  message: string;
+  type: string;
+  path: string[];
 }
 
-export interface SchemaMap {
-  params?: { [key: string]: Joi.SchemaLike }
+export interface ISchemaMap {
+  params?: {[key: string]: Joi.SchemaLike};
 
   request?: {
-    body?: { [key: string]: Joi.SchemaLike } | Joi.ArraySchema
-    headers?: { [key: string]: Joi.SchemaLike }
-  }
+    body?: {[key: string]: Joi.SchemaLike} | Joi.ArraySchema
+    headers?: {[key: string]: Joi.SchemaLike}
+  };
 
   response?: {
-    body?: { [key: string]: Joi.SchemaLike } | Joi.ArraySchema
-    headers?: { [key: string]: Joi.SchemaLike }
-  }
+    body?: {[key: string]: Joi.SchemaLike} | Joi.ArraySchema
+    headers?: {[key: string]: Joi.SchemaLike}
+  };
 }
 
-export function validate(schema: SchemaMap): IMiddleware {
+export function validate(schema: ISchemaMap): IMiddleware {
   return async (ctx: Context, next: () => Promise<any>) => {
     const valResult = Joi.validate(ctx, schema, {
-      allowUnknown: true,
-      abortEarly: false
+      abortEarly: false,
+      allowUnknown: true
     });
 
     if (valResult.error) {

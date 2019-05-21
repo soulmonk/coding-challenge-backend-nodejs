@@ -1,27 +1,25 @@
 import {DataTypes, Model, Sequelize} from 'sequelize';
-import {ModelInit} from '@models/model-init';
+import {BaseModel} from './base-model';
 
-export class Police extends Model {
+export class Police extends BaseModel {
   public id!: number; // Note that the `null assertion` `!` is required in strict mode.
 
   // timestamps!
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
-}
 
-export class PoliceInit extends ModelInit {
-  build() {
+  static Init(sequelize: Sequelize) {
     const attributes = {
       id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true
-      },
+      }
     };
 
     const options = {
       tableName: 'polices',
-      sequelize: this.sequelize
+      sequelize
     };
 
     Police.init(attributes, options);

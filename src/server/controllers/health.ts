@@ -1,5 +1,5 @@
-import * as Router from 'koa-router';
 import {Context} from 'koa';
+import * as Router from 'koa-router';
 
 function live(ctx: Context) {
   ctx.status = 200;

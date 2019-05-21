@@ -1,8 +1,10 @@
+import {logger} from '@services/logger';
+import {Server} from 'http';
 import * as Koa from 'koa';
 import {TServerConfiguration} from './configuration';
-import {Server} from 'http';
-import bodyParser from './middleware/bodyParser';
 import {creatRouter} from './controllers';
+import bodyParser from './middleware/bodyParser';
+import errorHandler from './middleware/errorHandler';
 
 export class ApplicationServer {
   private _app: Koa;
@@ -18,7 +20,7 @@ export class ApplicationServer {
 
   listen() {
     this._server = this._app.listen(this._config.port, () => {
-      console.log('Server running on port ' + this._config.port);
+      logger.info('Server running on port ' + this._config.port);
     });
   }
 
@@ -32,7 +34,9 @@ export class ApplicationServer {
   }
 
   private initMiddleware() {
-    this._app.use(bodyParser());
+    this._app
+      .use(errorHandler())
+      .use(bodyParser());
   }
 
   private initWebApi() {
