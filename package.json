@@ -5,9 +5,10 @@
   "main": "server.js",
   "scripts": {
     "build": "rm -rf dist && tsc",
-    "watch-server": "nodemon --watch 'src/**/*' -e ts,tsx --exec ts-node ./src/index.ts",
-
-    "test:integration": "npm run build && mocha --exit --recursive dist/test/integration"
+    "start": "node -r tsconfig-paths/register dist/src/index.js",
+    "ts-start": "ts-node -r tsconfig-paths/register ./src/index.ts",
+    "watch-server": "nodemon --watch 'src/**/*' -e ts,tsx --exec npm run ts-start",
+    "test:integration": "npm run build && mocha -r ts-node/register -r tsconfig-paths/register --exit --recursive dist/test/integration"
   },
   "repository": {
     "type": "git",
@@ -39,38 +40,39 @@
     "winston": "^3.2.1"
   },
   "devDependencies": {
-    "@types/bluebird": "^3.5.26",
-    "@types/node": "^12.0.0",
-    "@types/validator": "^10.11.0",
-    "@types/koa": "^2.0.48",
-    "@types/koa-router": "^7.0.40",
-    "chai": "^4.2.0",
-    "mocha": "^6.1.4",
-    "nock": "^10.0.6",
-    "nodemon": "^1.19.0",
-    "sinon": "^7.3.2",
-    "sinon-chai": "^3.3.0",
-    "ts-node": "^8.1.0",
-    "tslint-clean-code": "^0.2.9",
-    "typescript": "^3.4.5",
     "@types/async": "^2.4.2",
     "@types/bcryptjs": "^2.4.2",
+    "@types/bluebird": "^3.5.26",
     "@types/chai": "^4.1.7",
     "@types/joi": "^14.3.3",
     "@types/jsonwebtoken": "^8.3.2",
     "@types/knex": "^0.16.1",
+    "@types/koa": "^2.0.48",
     "@types/koa-bodyparser": "^4.2.2",
+    "@types/koa-router": "^7.0.40",
     "@types/mocha": "^5.2.6",
+    "@types/node": "^12.0.0",
     "@types/pino": "^5.8.7",
     "@types/sinon": "^7.0.11",
     "@types/supertest": "^2.0.7",
+    "@types/validator": "^10.11.0",
+    "chai": "^4.2.0",
     "husky": "^2.2.0",
+    "mocha": "^6.1.4",
+    "nock": "^10.0.6",
+    "nodemon": "^1.19.0",
     "nyc": "^14.1.1",
     "prettier": "^1.17.0",
+    "sinon": "^7.3.2",
+    "sinon-chai": "^3.3.0",
     "supertest": "^4.0.2",
+    "ts-node": "^8.1.0",
     "tsc-watch": "^2.1.2",
+    "tsconfig-paths": "^3.8.0",
     "tslint": "^5.16.0",
+    "tslint-clean-code": "^0.2.9",
     "tslint-config-prettier": "^1.18.0",
-    "tslint-plugin-prettier": "^2.0.1"
+    "tslint-plugin-prettier": "^2.0.1",
+    "typescript": "^3.4.5"
   }
 }

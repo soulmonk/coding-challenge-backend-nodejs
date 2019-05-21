@@ -1,4 +1,4 @@
-import {TDBConfiguration} from 'models/configuration';
+import {TDBConfiguration} from '@models/configuration';
 import {TServerConfiguration} from '../server/configuration';
 
 export type TConfiguration = {

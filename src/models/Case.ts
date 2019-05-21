@@ -1,5 +1,5 @@
 import {DataTypes, Model, Sequelize} from 'sequelize';
-import {ModelInit} from 'models/model-init';
+import {ModelInit} from '@models/model-init';
 
 export class Case extends Model {
   public id!: number; // Note that the `null assertion` `!` is required in strict mode.
@@ -13,7 +13,7 @@ export class CaseInit extends ModelInit {
   build() {
     const attributes = {
       id: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true
       }

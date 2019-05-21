@@ -3,18 +3,22 @@
     "module": "commonjs",
     "target": "es2017",
     "noImplicitAny": true,
+    "moduleResolution": "node",
     "outDir": "./dist",
     "sourceMap": true,
     "baseUrl": ".",
+    "typeRoots": [
+      "node_modules/@types"
+    ],
     "paths": {
-      "typings/*": [
-        "src/typings/*"
-      ],
-      "models/*": [
+      "@models/*": [
         "src/models/*"
       ],
+      "@server/*": [
+        "src/server/*"
+      ],
       "*": [
-        "node_modules/*",
+        "node_modules/*"
       ]
     }
   },

@@ -2,7 +2,7 @@ import {Sequelize} from 'sequelize';
 import {PoliceInit} from './Police';
 import {CaseInit} from './Case';
 import {TDBConfiguration} from './configuration';
-import {ModelInit} from 'models/model-init';
+import {ModelInit} from '@models/model-init';
 
 let dbConnection: DBConnection = null;
 

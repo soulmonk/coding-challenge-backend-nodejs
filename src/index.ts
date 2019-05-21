@@ -1,6 +1,6 @@
-import {DBConnection} from 'models/index';
+import {DBConnection} from '@models/index';
 import {Dialect} from 'sequelize';
-import {createServer} from './server';
+import {ApplicationServer} from './server';
 import {TConfiguration} from './configuration';
 
 async function init() {
@@ -21,10 +21,8 @@ async function init() {
 
   DBConnection.init(config.db);
 
-  const server = createServer(config.server);
+  const server = new ApplicationServer(config.server);
   server.listen();
-
-  console.log('Server running on port ' + config.server.port);
 
 }
 

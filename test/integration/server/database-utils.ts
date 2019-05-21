@@ -1,5 +1,5 @@
-import {DBConnection} from 'models/index';
-import {TDBConfiguration} from 'models/configuration';
+import {DBConnection} from '@models/index';
+import {TDBConfiguration} from '@models/configuration';
 
 const testDBConfig: TDBConfiguration = {
   'database': 'challenge',
