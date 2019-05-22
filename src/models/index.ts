@@ -1,4 +1,4 @@
-import {Sequelize} from 'sequelize';
+import {Sequelize, SyncOptions} from 'sequelize';
 import {BaseModel} from './base-model';
 import {Case} from './Case';
 import {TDBConfiguration} from './configuration';
@@ -32,8 +32,8 @@ export class DBConnection {
     dbConnection = null;
   }
 
-  sync() {
-    this.sequelize.sync({force: false});
+  sync(options?: SyncOptions) {
+    this.sequelize.sync(options);
   }
 
   private createModels() {
@@ -43,7 +43,7 @@ export class DBConnection {
     ];
 
     models.forEach((inst: typeof BaseModel) => {
-      inst.Init(this.sequelize);
+      inst.initialize(this.sequelize);
     });
 
     models.forEach((inst: typeof BaseModel) => {

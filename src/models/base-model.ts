@@ -1,9 +1,9 @@
 import {Model, Sequelize} from 'sequelize';
 
 export class BaseModel extends Model {
-  static associate(): void {}
+  public static associate(): void {}
 
-  static Init(sequelize: Sequelize): void {
+  public static initialize(sequelize: Sequelize): void {
     throw new Error('Not implemented');
   }
 }

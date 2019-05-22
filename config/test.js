@@ -1,18 +1,15 @@
-const path = require('path');
-
 module.exports = {
   server: {
-    port: 53290
+    port: 53250
   },
   db: {
-    database: 'challenge',
+    database: 'challenge_test',
     username: 'challenge',
     password: 'toor',
     options: {
       host: '127.0.0.1',
-      dialect: 'postgres',
+      dialect: 'postgres'
       // 'operatorsAliases': false
     }
-  },
-  root: path.join(__dirname, '..')
+  }
 };

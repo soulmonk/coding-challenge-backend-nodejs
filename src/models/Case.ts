@@ -8,7 +8,7 @@ export class Case extends BaseModel  {
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 
-  public static Init(sequelize: Sequelize) {
+  public static initialize(sequelize: Sequelize) {
     const attributes = {
       id: {
         type: DataTypes.INTEGER,
@@ -24,7 +24,7 @@ export class Case extends BaseModel  {
 
     Case.init(attributes, options);
 
-    // todo test maybe associate can be here, not after all init
+    // todo tests maybe associate can be here, not after all init
 
   }
 }

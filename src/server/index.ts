@@ -5,9 +5,10 @@ import {TServerConfiguration} from './configuration';
 import {creatRouter} from './controllers';
 import bodyParser from './middleware/bodyParser';
 import errorHandler from './middleware/errorHandler';
+import {default as loggerMiddleware} from './middleware/logger';
 
 export class ApplicationServer {
-  private _app: Koa;
+  private readonly _app: Koa;
   private _config: TServerConfiguration;
   private _server: Server;
 
@@ -22,6 +23,12 @@ export class ApplicationServer {
     this._server = this._app.listen(this._config.port, () => {
       logger.info('Server running on port ' + this._config.port);
     });
+
+    return this._server;
+  }
+
+  get app() {
+    return this._app;
   }
 
   server() {
@@ -35,6 +42,7 @@ export class ApplicationServer {
 
   private initMiddleware() {
     this._app
+      .use(loggerMiddleware())
       .use(errorHandler())
       .use(bodyParser());
   }

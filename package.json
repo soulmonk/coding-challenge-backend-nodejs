@@ -8,7 +8,7 @@
     "start": "node -r ./scripts/tsconfig-paths-bootstrap.js dist/src/index.js",
     "ts-start": "ts-node -r tsconfig-paths/register ./src/index.ts",
     "watch-server": "nodemon --watch 'src/**/*' -e ts,tsx --exec npm run ts-start",
-    "test:integration": "npm run build && mocha -r ts-node/register -r tsconfig-paths/register --exit --recursive dist/test/integration",
+    "test:integration": "npm run build && mocha -r ts-node/register -r tsconfig-paths/register --exit --recursive dist/tests/integration",
     "lint": "tslint -c tslint.json 'src/**/*.ts'"
   },
   "repository": {
@@ -48,6 +48,7 @@
     "@types/joi": "^14.3.3",
     "@types/koa": "^2.0.48",
     "@types/koa-bodyparser": "^4.2.2",
+    "@types/koa-logger": "^3.1.1",
     "@types/koa-router": "^7.0.40",
     "@types/mocha": "^5.2.6",
     "@types/node": "^12.0.0",
