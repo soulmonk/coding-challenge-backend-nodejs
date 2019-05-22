@@ -6,7 +6,7 @@ import {ApplicationServer} from './server';
 
 async function init() {
   const dbConnection = DBConnection.init(config.get('db'));
-  dbConnection.sync();
+  await dbConnection.sync();
 
   const server = new ApplicationServer(config.get('server'));
   server.listen();

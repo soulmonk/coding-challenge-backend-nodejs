@@ -33,7 +33,7 @@ export class DBConnection {
   }
 
   sync(options?: SyncOptions) {
-    this.sequelize.sync(options);
+    return this.sequelize.sync(options);
   }
 
   private createModels() {

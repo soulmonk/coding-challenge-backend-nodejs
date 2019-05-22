@@ -1,4 +1,5 @@
-import {DataTypes, Model, Sequelize} from 'sequelize';
+import {logger} from '@services/logger';
+import {DataTypes, Sequelize} from 'sequelize';
 import {BaseModel} from './base-model';
 
 export class Police extends BaseModel {
