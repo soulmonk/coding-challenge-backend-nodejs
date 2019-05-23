@@ -1,26 +1,38 @@
-import {logger} from '@services/logger';
-import {Association, DataTypes, HasOneGetAssociationMixin, HasOneSetAssociationMixin, Sequelize} from 'sequelize';
+import {
+  Association,
+  BelongsToGetAssociationMixin,
+  BelongsToSetAssociationMixin,
+  DataTypes,
+  HasOneGetAssociationMixin,
+  Sequelize
+} from 'sequelize';
 
 import {BaseModel} from './base-model';
 import {Police} from './Police';
 
 export enum TBikeType {
-  Mountain = 1,
-  Hybrid, // Comfort
-  Road,
-  TimeTrial, // Triathlon
-  BMX, // Trick
-  Commuting,
-  Cyclocross,
-  Track, // Fixed Gear
-  Tandem,
-  Folding,
-  Kids,
-  BeachCruiser,
-  Recumbent
+  Mountain = 'Mountain',
+  Hybrid = 'Hybrid', // Comfort
+  Road = 'Road',
+  TimeTrial = 'TimeTrial', // Triathlon
+  BMX = 'BMX', // Trick
+  Commuting = 'Commuting',
+  Cyclocross = 'Cyclocross',
+  Track = 'Track', // Fixed Gear
+  Tandem = 'Tandem',
+  Folding = 'Folding',
+  Kids = 'Kids',
+  BeachCruiser = 'BeachCruiser',
+  Recumbent = 'Recumbent',
 }
 
-export class Case extends BaseModel {
+export interface ICase {
+  id: number;
+  policeId?: number;
+  type: TBikeType;
+}
+
+export class Case extends BaseModel implements ICase {
   public static associations: {
     police: Association<Case, Police>;
   };
@@ -36,8 +48,7 @@ export class Case extends BaseModel {
   public readonly updatedAt!: Date;
 
   // these will not exist until `Model.init` was called.
-  public getPolice!: HasOneGetAssociationMixin<Police>; // Note the null assertions!
-  public setPolice!: HasOneSetAssociationMixin<Police, 'id'>;
+  public getPolice!: BelongsToGetAssociationMixin<Police>; // Note the null assertions!
 
   public static associate(): void {
     Case.belongsTo(Police, {
