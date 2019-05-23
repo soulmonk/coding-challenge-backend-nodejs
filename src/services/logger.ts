@@ -5,7 +5,9 @@ import {createLogger, format, Logger, LoggerOptions, transports} from 'winston';
 const {combine, timestamp, printf} = format;
 
 const myFormat = printf(info => {
-  return `${info.timestamp} ${info.level}: ${info.message}`;
+  // tslint:disable-next-line:no-shadowed-variable
+  const {level, message, timestamp, ...data} = info;
+  return `${timestamp} ${level}: ${message}, payload: ${JSON.stringify(data)}`;
 });
 
 // We might want to do something on rotation?

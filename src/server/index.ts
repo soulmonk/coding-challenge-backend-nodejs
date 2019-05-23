@@ -2,10 +2,10 @@ import {logger} from '@services/logger';
 import {Server} from 'http';
 import * as Koa from 'koa';
 import {TServerConfiguration} from './configuration';
-import {creatRouter} from './controllers';
 import bodyParser from './middleware/bodyParser';
 import errorHandler from './middleware/errorHandler';
 import {default as loggerMiddleware} from './middleware/logger';
+import {creatRouter} from './routes';
 
 export class ApplicationServer {
   private readonly _app: Koa;
@@ -19,16 +19,16 @@ export class ApplicationServer {
     this.init();
   }
 
+  get app() {
+    return this._app;
+  }
+
   listen() {
     this._server = this._app.listen(this._config.port, () => {
       logger.info('Server running on port ' + this._config.port);
     });
 
     return this._server;
-  }
-
-  get app() {
-    return this._app;
   }
 
   server() {

@@ -8,7 +8,7 @@
     "start": "node -r ./scripts/tsconfig-paths-bootstrap.js dist/src/index.js",
     "ts-start": "ts-node -r tsconfig-paths/register ./src/index.ts",
     "watch-server": "nodemon --watch 'src/**/*' -e ts,tsx --exec npm run ts-start",
-    "test:integration": "npm run build && mocha -r ts-node/register -r tsconfig-paths/register --exit --recursive dist/tests/integration",
+    "test:integration": "npm run build && NODE_ENV=test mocha -r ts-node/register -r tsconfig-paths/register --exit --recursive dist/tests/integration",
     "lint": "tslint -c tslint.json 'src/**/*.ts'"
   },
   "repository": {

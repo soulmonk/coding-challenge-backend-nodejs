@@ -29,7 +29,7 @@ describe('Case api', () => {
       await Case.create();
 
       const res = await server
-        .get('/api/police')
+        .get('/api/case')
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
         .expect(200);
@@ -39,7 +39,7 @@ describe('Case api', () => {
     });
 
     describe('search', () => {
-      // A bike can have multiple characteristics: license number, color, type, full name of the owner, date, and description of the theft.
+
       afterEach(async () => {
         await dbConnection.sync({force: true});
       });
@@ -54,9 +54,55 @@ describe('Case api', () => {
     });
   });
 
-  describe('#create', () => {
+  it('should return case details', async () => {
+    const data = {
+      ownerName: 'John Doe',
+      licenseNumber: '123abc456',
+      color: 'black',
+      type: 1,
+      theftDescription: 'Some description'
+    };
+  });
+
+  describe('#report a stolen bike', () => {
+    afterEach(async () => {
+      await dbConnection.sync({force: true});
+    });
+
     it('should create case', async () => {
-      throw new Error('Not implemented');
+
+      const data = {
+        ownerName: 'John Doe',
+        licenseNumber: '123abc456',
+        color: 'black',
+        type: 1,
+        theftDescription: 'Some description'
+      };
+
+      const res = await server
+        .post('/api/case')
+        .send(data)
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/)
+        .expect(200);
+
+      expect(res.body).to.have.property('data');
+
+      const record = res.body.data;
+      const caseProperties = [
+        'id',
+        'ownerName',
+        'licenseNumber',
+        'policeOfficerName',
+        'color',
+        'type',
+        'theftDescription',
+
+        'createdAt',
+        'updatedAt'
+      ];
+      expect(record).to.have.all.keys(caseProperties);
+      expect(record.id).to.be.equal(1);
     });
 
     it('should auto-assign case', async () => {

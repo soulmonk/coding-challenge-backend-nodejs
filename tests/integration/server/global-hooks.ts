@@ -1,6 +1,3 @@
-// TODO find better place
-process.env.NODE_ENV = 'test';
-
 import {logger} from '@services/logger';
 import {dbConnection, schemaMigration} from './database-utils';
 
