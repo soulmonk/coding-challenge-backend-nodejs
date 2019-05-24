@@ -14,10 +14,14 @@ describe('Police api', () => {
       await dbConnection.sync({force: true});
     });
 
-    describe('validation', () => {
-      it('should not be created without name', async () => {
-        throw new Error('Not implemented');
-      });
+    it('should not be created without name', async () => {
+      const res = await server
+        .post('/api/police')
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/)
+        .expect(400);
+
+      expect(res.body).to.have.property('data');
     });
 
     it('should create police officer record', async () => {

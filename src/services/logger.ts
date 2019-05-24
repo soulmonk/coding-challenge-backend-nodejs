@@ -4,6 +4,7 @@ import {createLogger, format, Logger, LoggerOptions, transports} from 'winston';
 
 const {combine, timestamp, printf} = format;
 
+// TODO find format as in plain console.log
 const myFormat = printf(info => {
   // tslint:disable-next-line:no-shadowed-variable
   const {level, message, timestamp, ...data} = info;
