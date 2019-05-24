@@ -1,14 +1,8 @@
-import {
-  Association,
-  BelongsToGetAssociationMixin,
-  BelongsToSetAssociationMixin,
-  DataTypes,
-  HasOneGetAssociationMixin,
-  Sequelize
-} from 'sequelize';
-
-import {BaseModel} from './base-model';
+import {Association, BelongsToGetAssociationMixin, DataTypes, Model, Sequelize} from 'sequelize';
+import {IModelInitialization} from './model-initialization';
 import {Police} from './Police';
+
+// TODO split files: entity, model, initialization
 
 export enum TBikeType {
   Mountain = 'Mountain',
@@ -32,7 +26,7 @@ export interface ICase {
   type: TBikeType;
 }
 
-export class Case extends BaseModel implements ICase {
+export class Case extends Model implements ICase {
   public static associations: {
     police: Association<Case, Police>;
   };
@@ -50,16 +44,19 @@ export class Case extends BaseModel implements ICase {
   // these will not exist until `Model.init` was called.
   public getPolice!: BelongsToGetAssociationMixin<Police>; // Note the null assertions!
 
-  public static associate(): void {
+  public readonly police!: Police;
+}
+
+export const initialization: IModelInitialization = {
+  associate(): void {
     Case.belongsTo(Police, {
       foreignKey: {
         name: 'policeId',
         allowNull: true
       }
     });
-  }
-
-  public static initialize(sequelize: Sequelize) {
+  },
+  initialize(sequelize: Sequelize) {
     const attributes = {
       id: {
         type: DataTypes.INTEGER,
@@ -90,14 +87,4 @@ export class Case extends BaseModel implements ICase {
 
     Case.init(attributes, options);
   }
-
-  // todo move to service
-  toPublic() {
-    return {
-      id: this.id,
-      type: this.type
-    };
-  }
-}
-
-// TODO create ModelBuilder | ModelInit -> move from base model associate & init
+};

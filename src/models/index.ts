@@ -1,8 +1,8 @@
 import {Sequelize, SyncOptions} from 'sequelize';
-import {BaseModel} from './base-model';
-import {Case} from './Case';
+import {initialization as CaseInit} from './Case';
 import {TDBConfiguration} from './configuration';
-import {Police} from './Police';
+import {IModelInitialization} from './model-initialization';
+import {initialization as PoliceInit} from './Police';
 
 let dbConnection: DBConnection = null;
 
@@ -38,15 +38,15 @@ export class DBConnection {
 
   private createModels() {
     const models = [
-      Police,
-      Case
+      PoliceInit,
+      CaseInit
     ];
 
-    models.forEach((inst: typeof BaseModel) => {
+    models.forEach((inst: IModelInitialization) => {
       inst.initialize(this.sequelize);
     });
 
-    models.forEach((inst: typeof BaseModel) => {
+    models.forEach((inst: IModelInitialization) => {
       inst.associate();
     });
   }

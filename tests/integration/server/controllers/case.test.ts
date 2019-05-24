@@ -38,9 +38,15 @@ describe('Case api', () => {
       expect(res.body.data).to.have.property('length', 2);
     });
 
+    it('should validate request')
+
     describe('search', () => {
 
-      afterEach(async () => {
+      before(async () => {
+        // loadSeeds
+      });
+
+      after(async () => {
         await dbConnection.sync({force: true});
       });
 
@@ -62,6 +68,7 @@ describe('Case api', () => {
       type: 1,
       theftDescription: 'Some description'
     };
+    throw new Error('Not implemented');
   });
 
   describe('#report a stolen bike', () => {

@@ -1,6 +1,6 @@
-import {Association, DataTypes, HasOneGetAssociationMixin, HasOneSetAssociationMixin, Sequelize} from 'sequelize';
-import {BaseModel} from './base-model';
+import {Association, DataTypes, HasOneGetAssociationMixin, HasOneSetAssociationMixin, Model, Sequelize} from 'sequelize';
 import {Case} from './Case';
+import {IModelInitialization} from './model-initialization';
 
 export interface IPolice {
   id: number;
@@ -9,7 +9,7 @@ export interface IPolice {
   caseId?: number;
 }
 
-export class Police extends BaseModel implements IPolice {
+export class Police extends Model implements IPolice {
   public static associations: {
     case: Association<Police, Case>;
   };
@@ -23,8 +23,10 @@ export class Police extends BaseModel implements IPolice {
   public caseId?: number;
   // actively include a relation.
   public readonly case?: Case; // Note this is optional since it's only populated when explicitly requested in code
+}
 
-  public static associate(): void {
+export const initialization: IModelInitialization = {
+  associate(): void {
     Police.hasOne(Case, {
       foreignKey: {
         name: 'policeId',
@@ -32,9 +34,8 @@ export class Police extends BaseModel implements IPolice {
       },
       as: 'case'
     });
-  }
-
-  static initialize(sequelize: Sequelize) {
+  },
+  initialize(sequelize: Sequelize) {
     const attributes = {
       id: {
         type: DataTypes.INTEGER,
@@ -54,4 +55,4 @@ export class Police extends BaseModel implements IPolice {
 
     Police.init(attributes, options);
   }
-}
+};
