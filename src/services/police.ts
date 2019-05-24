@@ -7,6 +7,7 @@ export class PoliceService {
     return {
       id: record.id,
       fullName: record.fullName,
+      caseId: record.caseId || (record.case && record.case.id) || null // todo sequelize update association (without find) after set
     };
   }
 
@@ -14,20 +15,28 @@ export class PoliceService {
     logger.debug('Create model police: ', data);
 
     const record = await Police.create(data);
+
+    const availableCase = await AssignService.findUnassignedCase();
+
+    if (availableCase) {
+      await record.setCase(availableCase);
+      record.caseId = availableCase.id; // todo update "case" after set
+    }
+
     return PoliceService.toPublic(record);
   }
 
   static async list() {
-    const records = await Police.findAll();
+    const records = await Police.findAll({
+      include: [Police.associations.case],
+      order: [['id', 'ASC']] // todo do I need this?
+    });
     return records.map(PoliceService.toPublic);
   }
 
   static async delete(id: number) {
-    const police = await Police.findByPk(id, {
-      include: [Police.associations.case]
-    });
-
-    console.log('police.ts::delete::31 >>>', police);
+    // todo what better: one query with join or two one if needed second?
+    const police = await Police.findByPk(id);
 
     if (!police) {
       return false;

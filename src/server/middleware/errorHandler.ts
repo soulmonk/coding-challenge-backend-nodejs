@@ -10,7 +10,7 @@ export default (): IMiddleware => {
     try {
       await next();
     } catch (err) {
-      logger.error(err);
+      logger.error('Error handler', err);
       ctx.status = constants.HTTP_STATUS_INTERNAL_SERVER_ERROR;
       ctx.body = {success: false, error: 'Something went wrong'};
     }

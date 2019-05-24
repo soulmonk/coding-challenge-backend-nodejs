@@ -89,9 +89,6 @@ export class Case extends BaseModel implements ICase {
     };
 
     Case.init(attributes, options);
-
-    // todo tests maybe associate can be here, not after all init
-
   }
 
   // todo move to service
@@ -102,3 +99,5 @@ export class Case extends BaseModel implements ICase {
     };
   }
 }
+
+// TODO create ModelBuilder | ModelInit -> move from base model associate & init

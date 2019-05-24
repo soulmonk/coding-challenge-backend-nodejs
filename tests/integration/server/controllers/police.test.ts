@@ -14,6 +14,60 @@ describe('Police api', () => {
       await dbConnection.sync({force: true});
     });
 
+    it('should return list', async () => {
+      await Police.create({fullName: 'test1'});
+      await Police.create({fullName: 'test2'});
+
+      const res = await server
+        .get('/api/police')
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/)
+        .expect(200);
+
+      expect(res.body).to.have.property('data');
+      expect(res.body.data).to.have.property('length', 2);
+      expect(res.body.data).to.have.deep.equal([
+        {
+          id: 1,
+          fullName: 'test1',
+          caseId: null
+        },
+        {
+          id: 2,
+          fullName: 'test2',
+          caseId: null
+        }
+      ]);
+    });
+
+    it('should return list with case', async () => {
+      const police = await Police.create({fullName: 'test1'});
+      await Police.create({fullName: 'test2'});
+      const case1 = await Case.create({ownerName: 'test1', type: TBikeType.Commuting});
+      await police.setCase(case1);
+
+      const res = await server
+        .get('/api/police')
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/)
+        .expect(200);
+
+      expect(res.body).to.have.property('data');
+      expect(res.body.data).to.have.property('length', 2);
+      expect(res.body.data).to.have.deep.equal([
+        {
+          id: 1,
+          fullName: 'test1',
+          caseId: 1
+        },
+        {
+          id: 2,
+          fullName: 'test2',
+          caseId: null
+        }
+      ]);
+    });
+
     it('should not be created without name', async () => {
       const res = await server
         .post('/api/police')
@@ -41,18 +95,37 @@ describe('Police api', () => {
       const record = res.body.data;
       const policeProperties = [
         'id',
-        'fullName'
+        'fullName',
+        'caseId'
       ];
       expect(record).to.have.all.keys(policeProperties);
       expect(record.id).to.be.equal(1);
     });
 
     it('should auto-assign case', async () => {
-      throw new Error('Not implemented');
+      const case1 = await Case.create({ownerName: 'test1', type: TBikeType.Commuting});
+      const data = {
+        fullName: 'test'
+      };
+
+      const res = await server
+        .post('/api/police')
+        .send(data)
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/)
+        .expect(200);
+
+      expect(res.body).to.have.property('data');
+      expect(res.body.data).to.have.property('caseId', case1.id);
     });
   });
 
   describe('fire', async () => {
+
+    afterEach(async () => {
+      await dbConnection.sync({force: true});
+    });
+
     it('should remove police officer record', async () => {
       const police = await Police.create({fullName: 'test1'});
 
