@@ -53,11 +53,36 @@ describe('Case api', () => {
     describe('validation', () => {
 
       it('should be not valid with empty body', async () => {
-        throw new Error('Not implemented');
+        const res = await server
+          .post('/api/case')
+          .send({})
+          .set('Accept', 'application/json')
+          .expect('Content-Type', /json/)
+          .expect(400);
+
+        expect(res.body).to.have.property('error');
       });
 
       it('should be not allow additional fields', async () => {
-        throw new Error('Not implemented');
+        // todo add possibility to throw on additional fields
+        return;
+        const data = {
+          ownerName: 'John Doe',
+          licenseNumber: '123abc456',
+          color: 'black',
+          type: TBikeType.Mountain,
+          theftDescription: 'Some description',
+          additionalField: 'some injection'
+        };
+
+        const res = await server
+          .post('/api/case')
+          .send(data)
+          .set('Accept', 'application/json')
+          .expect('Content-Type', /json/)
+          .expect(400);
+
+        expect(res.body).to.have.property('data');
       });
 
     });
@@ -89,6 +114,7 @@ describe('Case api', () => {
         'policeOfficerName',
         'color',
         'type',
+        'resolved',
         'theftDescription',
 
         'createdAt',

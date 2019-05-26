@@ -20,7 +20,6 @@ export const create: Joi.SchemaMap = {
   type: Joi.string().valid(BikeTypes),
   ownerName: Joi.string().required(),
   licenseNumber: Joi.string().required(),
-  policeOfficerName: Joi.string().required(),
   color: Joi.string().required(),
   theftDescription: Joi.string().required()
 };

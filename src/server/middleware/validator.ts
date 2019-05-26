@@ -19,11 +19,15 @@ export interface ISchemaMap {
   };
 }
 
+// todo rewrite as single validation: params, request (query, body, headers), response (body, headers)
 export function validate(schema: ISchemaMap): IMiddleware {
   return async (ctx: Context, next: () => Promise<any>) => {
     const valResult = Joi.validate(ctx, schema, {
       abortEarly: false,
-      allowUnknown: true
+      allowUnknown: true,
+      // stripUnknown: {
+      //   objects: true // todo not working as expected: remove extra fields
+      // }
     });
 
     if (valResult.error) {
@@ -38,6 +42,17 @@ export function validate(schema: ISchemaMap): IMiddleware {
         }))
       };
       return;
+    }
+
+    // todo find better way to omit extra values
+    if (schema.params) {
+      ctx.params = valResult.value.params;
+    }
+    if (schema.request!.body) {
+      ctx.request.body = valResult.value.request.body;
+    }
+    if (schema.request!.query) {
+      ctx.request.query = valResult.value.request.query;
     }
 
     await next();
