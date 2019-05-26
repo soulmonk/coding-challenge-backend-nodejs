@@ -8,6 +8,7 @@ export interface ISchemaMap {
   params?: {[key: string]: Joi.SchemaLike};
 
   request?: {
+    query?: {[key: string]: Joi.SchemaLike} | Joi.ArraySchema
     body?: {[key: string]: Joi.SchemaLike} | Joi.ArraySchema
     headers?: {[key: string]: Joi.SchemaLike}
   };

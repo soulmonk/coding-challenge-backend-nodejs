@@ -9,7 +9,7 @@ export class AssignService {
   }
 
   static findUnassignedCase(): Promise<Case> {
-    return Case.findOne({where: {policeId: null}});
+    return Case.findOne({where: {policeId: null, resolved: false}});
   }
 
   static findAvalablePolice(): Promise<Police> {

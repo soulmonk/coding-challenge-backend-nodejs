@@ -3,6 +3,7 @@ import * as Router from 'koa-router';
 
 import {routes as healthRoutes} from './health/routes';
 import {routes as policeRoutes} from './police/routes';
+import {routes as caseRoutes} from './case/routes';
 
 function notFound(ctx: Context) {
   ctx.status = 404;
@@ -14,6 +15,7 @@ export const creatRouter = (): Router => {
 
   healthRoutes(router);
   policeRoutes(router);
+  caseRoutes(router);
 
   router.use(notFound);
 

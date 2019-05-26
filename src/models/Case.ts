@@ -1,4 +1,4 @@
-import {Association, BelongsToGetAssociationMixin, DataTypes, Model, Sequelize} from 'sequelize';
+import {BelongsTo, BelongsToGetAssociationMixin, DataTypes, Model, Sequelize} from 'sequelize';
 import {IModelInitialization} from './model-initialization';
 import {Police} from './Police';
 
@@ -29,11 +29,17 @@ export interface ICase {
   policeOfficerName?: string;
   color: string;
   theftDescription: string;
+  resolved: boolean;
+
+  police?: Police;
+
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export class Case extends Model implements ICase {
   public static associations: {
-    police: Association<Case, Police>;
+    police: BelongsTo<Police>;
   };
 
   public id!: number; // Note that the `null assertion` `!` is required in strict mode.
@@ -42,6 +48,8 @@ export class Case extends Model implements ICase {
   public licenseNumber: string;
   public color: string;
   public theftDescription: string;
+
+  public resolved = false;
 
   public policeId!: number;
   public policeOfficerName?: string; // -> police.fullName
@@ -64,7 +72,8 @@ export const initialization: IModelInitialization = {
       foreignKey: {
         name: 'policeId',
         allowNull: true
-      }
+      },
+      as: 'police'
     });
   },
   initialize(sequelize: Sequelize) {
@@ -75,19 +84,7 @@ export const initialization: IModelInitialization = {
         primaryKey: true
       },
       type: {
-        type: DataTypes.ENUM('Mountain',
-          'Hybrid',
-          'Road',
-          'TimeTrial',
-          'BMX',
-          'Commuting',
-          'Cyclocross',
-          'Track',
-          'Tandem',
-          'Folding',
-          'Kids',
-          'BeachCruiser',
-          'Recumbent'),
+        type: DataTypes.ENUM(...Object.values(TBikeType)),
         require: true
       },
       ownerName: {
@@ -105,6 +102,12 @@ export const initialization: IModelInitialization = {
       theftDescription: {
         type: DataTypes.TEXT,
         require: true,
+      },
+      resolved: {
+        type: DataTypes.BOOLEAN,
+        require: true,
+        allowNull: false,
+        default: false
       }
     };
 
