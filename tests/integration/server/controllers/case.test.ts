@@ -135,6 +135,10 @@ describe('Case api', () => {
       throw new Error('Not implemented');
     });
 
+    it('should not allow resolve unassigned case', async () => {
+      throw new Error('Not implemented');
+    });
+
     it('should auto-assign case', async () => {
       throw new Error('Not implemented');
     });

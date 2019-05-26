@@ -4,5 +4,5 @@ export const create: Joi.SchemaMap = {
   fullName: Joi.string().required()
 };
 export const remove: Joi.SchemaMap = {
-  params: Joi.number().required()
+  id: Joi.number().required()
 };

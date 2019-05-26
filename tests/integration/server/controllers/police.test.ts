@@ -148,6 +148,21 @@ describe('Police api', () => {
       expect(res.body).to.have.property('error', 'Not found');
     });
 
+    it('should not allow not string id', async () => {
+      const police = await Police.create({fullName: 'test1'});
+
+      const res = await server
+        .delete('/api/police/some_id' + police.id)
+        .set('Accept', 'application/json')
+        .expect(400);
+
+      const removedRecord = await Police.findByPk(police.id);
+      expect(removedRecord).to.be.not.null;
+      expect(removedRecord.id).to.be.equal(police.id);
+
+      expect(res.body).to.have.property('error');
+    });
+
     it('should not remove police officer record if one is assign with case', async () => {
       const police = await Police.create({fullName: 'test1'});
       const case1 = await Case.create({ownerName: 'test1', type: TBikeType.Commuting});
