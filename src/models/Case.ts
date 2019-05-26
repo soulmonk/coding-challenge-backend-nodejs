@@ -24,6 +24,11 @@ export interface ICase {
   id: number;
   policeId?: number;
   type: TBikeType;
+  ownerName: string;
+  licenseNumber: string;
+  policeOfficerName?: string;
+  color: string;
+  theftDescription: string;
 }
 
 export class Case extends Model implements ICase {
@@ -33,7 +38,13 @@ export class Case extends Model implements ICase {
 
   public id!: number; // Note that the `null assertion` `!` is required in strict mode.
 
-  public policeId?: number;
+  public ownerName: string;
+  public licenseNumber: string;
+  public color: string;
+  public theftDescription: string;
+
+  public policeId!: number;
+  public policeOfficerName?: string; // -> police.fullName
 
   public type: TBikeType;
 
@@ -76,7 +87,24 @@ export const initialization: IModelInitialization = {
           'Folding',
           'Kids',
           'BeachCruiser',
-          'Recumbent')
+          'Recumbent'),
+        require: true
+      },
+      ownerName: {
+        type: DataTypes.STRING,
+        require: true,
+      },
+      licenseNumber: {
+        type: DataTypes.STRING,
+        require: true,
+      },
+      color: {
+        type: DataTypes.STRING,
+        require: true,
+      },
+      theftDescription: {
+        type: DataTypes.TEXT,
+        require: true,
       }
     };
 

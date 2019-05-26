@@ -1,6 +1,8 @@
 import {TDBConfiguration} from '@models/configuration';
 import {DBConnection} from '@models/index';
 import * as config from 'config';
+import {readFileSync} from 'fs';
+import {QueryTypes} from 'sequelize';
 
 const testDBConfig: TDBConfiguration = config.get('db');
 
@@ -10,10 +12,10 @@ export function schemaMigration() {
   return dbConnection.sync({force: true});
 }
 
-export function addSeeds() {
-  throw new Error('Not implemented');
+export function loadSeeds(path: string) {
+  const query = readFileSync(path, 'utf8');
+  return dbConnection.sequelize.query(query, {raw: true, type: QueryTypes.INSERT});
 }
-
 
 /*
 import {createLogger, format, transports} from 'winston';

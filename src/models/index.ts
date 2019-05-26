@@ -6,6 +6,8 @@ import {initialization as PoliceInit} from './Police';
 
 let dbConnection: DBConnection = null;
 
+// todo remove sequelize, why ?
+
 export class DBConnection {
   sequelize: Sequelize;
 

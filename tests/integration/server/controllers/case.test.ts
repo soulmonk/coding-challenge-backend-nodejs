@@ -1,7 +1,8 @@
-import {Case} from '@models/Case';
-import {dbConnection} from '@tests/integration/server/database-utils';
+import {TBikeType} from '@models/Case';
+import {dbConnection, loadSeeds} from '@tests/integration/server/database-utils';
 import {server} from '@tests/integration/server/server-utils';
 import {expect} from 'chai';
+import {join} from 'path';
 import {globalHooks} from '../global-hooks';
 
 describe('Case api', () => {
@@ -9,11 +10,16 @@ describe('Case api', () => {
 
   describe('#list', () => {
 
-    afterEach(async () => {
+    before(async () => {
+      // load seeds
+      return loadSeeds(join(__dirname, 'case-search.seeds.sql'));
+    });
+
+    after(async () => {
       await dbConnection.sync({force: true});
     });
 
-    it('should return empty list', async () => {
+    it('should return list', async () => {
       const res = await server
         .get('/api/case')
         .set('Accept', 'application/json')
@@ -21,35 +27,14 @@ describe('Case api', () => {
         .expect(200);
 
       expect(res.body).to.have.property('data');
-      expect(res.body.data).to.have.property('length', 0);
+      expect(res.body.data).to.have.property('length', 5);
     });
 
-    it('should return all list', async () => {
-      await Case.create();
-      await Case.create();
-
-      const res = await server
-        .get('/api/case')
-        .set('Accept', 'application/json')
-        .expect('Content-Type', /json/)
-        .expect(200);
-
-      expect(res.body).to.have.property('data');
-      expect(res.body.data).to.have.property('length', 2);
+    it('should validate request', async () => {
+      throw new Error('Not implemented');
     });
-
-    it('should validate request')
 
     describe('search', () => {
-
-      before(async () => {
-        // loadSeeds
-      });
-
-      after(async () => {
-        await dbConnection.sync({force: true});
-      });
-
       it('should filter by name', async () => {
         throw new Error('Not implemented');
       });
@@ -60,20 +45,21 @@ describe('Case api', () => {
     });
   });
 
-  it('should return case details', async () => {
-    const data = {
-      ownerName: 'John Doe',
-      licenseNumber: '123abc456',
-      color: 'black',
-      type: 1,
-      theftDescription: 'Some description'
-    };
-    throw new Error('Not implemented');
-  });
-
   describe('#report a stolen bike', () => {
     afterEach(async () => {
       await dbConnection.sync({force: true});
+    });
+
+    describe('validation', () => {
+
+      it('should be not valid with empty body', async () => {
+        throw new Error('Not implemented');
+      });
+
+      it('should be not allow additional fields', async () => {
+        throw new Error('Not implemented');
+      });
+
     });
 
     it('should create case', async () => {
@@ -82,7 +68,7 @@ describe('Case api', () => {
         ownerName: 'John Doe',
         licenseNumber: '123abc456',
         color: 'black',
-        type: 1,
+        type: TBikeType.Mountain,
         theftDescription: 'Some description'
       };
 
