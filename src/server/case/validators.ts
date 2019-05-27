@@ -3,7 +3,7 @@ import {TBikeType} from '@models/Case';
 
 const BikeTypes = Object.values(TBikeType);
 
-export const list: Joi.SchemaMap = {
+export const list: Joi.SchemaMap = { // TODO min values
   type: Joi.string().valid(BikeTypes),
   ownerName: Joi.string(),
   color: Joi.string(),

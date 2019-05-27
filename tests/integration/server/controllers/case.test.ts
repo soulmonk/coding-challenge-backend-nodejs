@@ -73,13 +73,6 @@ describe('Case api', () => {
 
     describe('search', () => {
       it('should filter by name', async () => {
-        /*
-        type: Joi.string().valid(BikeTypes),
-  ownerName: Joi.string(),
-  color: Joi.string(),
-  policeId: Joi.number(),
-  resolved: Joi.boolean(),
-  */
         const res = await server
           .get('/api/case')
           .query({ownerName: 'owner1'})
@@ -89,6 +82,10 @@ describe('Case api', () => {
 
         expect(res.body).to.have.property('data');
         expect(res.body.data).to.have.property('length', 1);
+      });
+
+      it('should filter by officer', async () => {
+        throw new Error('Not implemented');
       });
 
       buildSearchCase('owner name', {ownerName: 'owner1'}, 1);
