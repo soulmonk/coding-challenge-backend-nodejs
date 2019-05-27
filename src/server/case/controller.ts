@@ -14,8 +14,23 @@ export async function create(ctx: Context) {
 }
 export async function resolve(ctx: Context) {
   const id = ctx.params.id;
+  let resolved;
+
+  try {
+    resolved = await Service.resolve(id);
+  } catch (e) {
+    ctx.status = 400;
+    ctx.body = {error: e.message};
+    return;
+  }
+
+  if (!resolved) {
+    ctx.status = 404;
+    ctx.body = {error: 'Not found'};
+    return;
+  }
 
   ctx.body = {
-    data: await Service.resolve(id)
+    data: resolved
   };
 }

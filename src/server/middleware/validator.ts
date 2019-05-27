@@ -31,6 +31,7 @@ export function validate(schema: ISchemaMap): IMiddleware {
     });
 
     if (valResult.error) {
+      // todo prettify result
       logger.error('Validation error: ', valResult.error);
       ctx.status = constants.HTTP_STATUS_BAD_REQUEST;
       ctx.body = {
@@ -48,11 +49,13 @@ export function validate(schema: ISchemaMap): IMiddleware {
     if (schema.params) {
       ctx.params = valResult.value.params;
     }
-    if (schema.request!.body) {
-      ctx.request.body = valResult.value.request.body;
-    }
-    if (schema.request!.query) {
-      ctx.request.query = valResult.value.request.query;
+    if (schema.request) {
+      if (schema.request.body) {
+        ctx.request.body = valResult.value.request.body;
+      }
+      if (schema.request.query) {
+        ctx.request.query = valResult.value.request.query;
+      }
     }
 
     await next();

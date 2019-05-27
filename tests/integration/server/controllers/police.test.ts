@@ -161,6 +161,7 @@ describe('Police api', () => {
       expect(removedRecord.id).to.be.equal(police.id);
 
       expect(res.body).to.have.property('error');
+      // todo contain validation error
     });
 
     it('should not remove police officer record if one is assign with case', async () => {

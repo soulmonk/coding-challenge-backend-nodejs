@@ -1,5 +1,5 @@
 import {Case, ICase} from '@models/Case';
-import {Police} from '@models/Police';
+import {AssignService} from './assign';
 
 export class CaseService {
   static toPublic(record: ICase) {
@@ -26,8 +26,12 @@ export class CaseService {
 
   static async create(data: ICase): Promise<ICase> {
     const record = await Case.create(data);
-    // todo auto assign
-    // find available
+
+    const availablePoliceOfficer = await AssignService.findAvailablePolice();
+    if (availablePoliceOfficer) {
+      availablePoliceOfficer.setCase(record);
+      record.policeOfficerName = availablePoliceOfficer.fullName;
+    }
     return this.toPublic(record);
   }
 
@@ -46,9 +50,12 @@ export class CaseService {
     record.resolved = true;
     record.policeId = null; // todo do we need for history?
 
-    // todo auto assign police officer for not assign case
-
     const saved = await record.save();
+
+    const availableCase = await AssignService.findUnassignedCase();
+    if (availableCase) {
+      await assignPoliceOfficer.setCase(availableCase);
+    }
 
     return this.toPublic(saved);
   }

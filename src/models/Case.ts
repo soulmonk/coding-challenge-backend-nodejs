@@ -52,7 +52,7 @@ export class Case extends Model implements ICase {
   public resolved = false;
 
   public policeId!: number;
-  public policeOfficerName?: string; // -> police.fullName
+  public policeOfficerName?: string; // -> police.fullName // todo better policeId to public
 
   public type: TBikeType;
 
