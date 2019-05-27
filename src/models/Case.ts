@@ -29,6 +29,7 @@ export interface ICase {
   policeOfficerName?: string;
   color: string;
   theftDescription: string;
+  date: Date;
   resolved: boolean;
 
   police?: Police;
@@ -48,6 +49,7 @@ export class Case extends Model implements ICase {
   public licenseNumber: string;
   public color: string;
   public theftDescription: string;
+  public date: Date;
 
   public resolved = false;
 
@@ -101,6 +103,10 @@ export const initialization: IModelInitialization = {
       },
       theftDescription: {
         type: DataTypes.TEXT,
+        require: true,
+      },
+      date: {
+        type: DataTypes.DATE,
         require: true,
       },
       resolved: {

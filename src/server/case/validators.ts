@@ -21,5 +21,6 @@ export const create: Joi.SchemaMap = {
   ownerName: Joi.string().required(),
   licenseNumber: Joi.string().required(),
   color: Joi.string().required(),
+  date: Joi.date().required(),
   theftDescription: Joi.string().required()
 };

@@ -32,12 +32,34 @@ describe('Case api', () => {
     });
 
     it('should validate request', async () => {
-      throw new Error('Not implemented');
+      const res = await server
+        .get('/api/case')
+        .query({resolved: 'boolean'})
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/)
+        .expect(400);
+
+      expect(res.body).to.have.property('error');
     });
 
     describe('search', () => {
       it('should filter by name', async () => {
-        throw new Error('Not implemented');
+        /*
+        type: Joi.string().valid(BikeTypes),
+  ownerName: Joi.string(),
+  color: Joi.string(),
+  policeId: Joi.number(),
+  resolved: Joi.boolean(),
+  */
+        const res = await server
+          .get('/api/case')
+          .query({ownerName: 'owner1'})
+          .set('Accept', 'application/json')
+          .expect('Content-Type', /json/)
+          .expect(200);
+
+        expect(res.body).to.have.property('data');
+        expect(res.body.data).to.have.property('length', 1);
       });
 
       it('should filter by ....', async () => {
@@ -94,6 +116,7 @@ describe('Case api', () => {
         ownerName: 'John Doe',
         licenseNumber: '123abc456',
         color: 'black',
+        date: new Date().toString(),
         type: TBikeType.Mountain,
         theftDescription: 'Some description'
       };
@@ -117,6 +140,7 @@ describe('Case api', () => {
         'type',
         'resolved',
         'theftDescription',
+        'date',
 
         'createdAt',
         'updatedAt'

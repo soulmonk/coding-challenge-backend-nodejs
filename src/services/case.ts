@@ -10,6 +10,7 @@ export class CaseService {
       licenseNumber: record.licenseNumber,
       color: record.color,
       theftDescription: record.theftDescription,
+      date: record.date,
       resolved: record.resolved,
 
       createdAt: record.createdAt,
@@ -19,7 +20,10 @@ export class CaseService {
     };
   }
 
-  static async list(): Promise<ICase[]> {
+  static async list(query: {[key: string]: string | number}): Promise<ICase[]> {
+
+    // todo build query
+
     const records = await Case.findAll({include: [Case.associations.police]});
     return records.map(this.toPublic);
   }
