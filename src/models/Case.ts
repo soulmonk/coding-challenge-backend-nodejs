@@ -93,7 +93,7 @@ export const initialization: IModelInitialization = {
         type: DataTypes.STRING,
         require: true,
       },
-      licenseNumber: {
+      licenseNumber: { // todo unique?
         type: DataTypes.STRING,
         require: true,
       },

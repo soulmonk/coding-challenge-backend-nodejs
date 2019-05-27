@@ -7,7 +7,7 @@ export const list: Joi.SchemaMap = {
   type: Joi.string().valid(BikeTypes),
   ownerName: Joi.string(),
   color: Joi.string(),
-  policeId: Joi.number(),
+  policeId: [Joi.number(), Joi.allow('')],
   resolved: Joi.boolean(),
   // todo theft description ?
 };

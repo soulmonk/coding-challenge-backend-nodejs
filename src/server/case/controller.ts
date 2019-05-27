@@ -2,8 +2,9 @@ import {CaseService as Service} from '@services/case';
 import {Context} from 'koa';
 
 export async function list(ctx: Context) {
+  const query = ctx.request.query;
   ctx.body = {
-    data: await Service.list()
+    data: await Service.list(query)
   };
 }
 export async function create(ctx: Context) {

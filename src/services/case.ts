@@ -1,4 +1,5 @@
 import {Case, ICase} from '@models/Case';
+import {Op} from 'sequelize';
 import {AssignService} from './assign';
 
 export class CaseService {
@@ -21,10 +22,29 @@ export class CaseService {
   }
 
   static async list(query: {[key: string]: string | number}): Promise<ICase[]> {
+    const where: any = {};
 
-    // todo build query
+    if (query.ownerName) {
+      where.ownerName = {[Op.substring]: query.ownerName};
+    }
+    if (query.type) {
+      where.type = query.type;
+    }
+    if (query.color) {
+      where.color = query.color;
+    }
+    if (query.resolved) {
+      where.resolved = query.resolved;
+    }
+    if (query.policeId !== undefined) {
+      if (query.policeId === '') {
+        where.policeId = {[Op.eq]: null};
+      } else {
+        where.policeId = query.policeId;
+      }
+    }
 
-    const records = await Case.findAll({include: [Case.associations.police]});
+    const records = await Case.findAll({where, include: [Case.associations.police]});
     return records.map(this.toPublic);
   }
 

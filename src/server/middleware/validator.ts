@@ -54,6 +54,8 @@ export function validate(schema: ISchemaMap): IMiddleware {
         ctx.request.body = valResult.value.request.body;
       }
       if (schema.request.query) {
+        console.log('validator.ts::::57 >>>', ctx.request.query);
+        console.log('validator.ts::::57 >>>', valResult.value.request.query);
         ctx.request.query = valResult.value.request.query;
       }
     }

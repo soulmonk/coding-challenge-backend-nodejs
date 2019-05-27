@@ -4,7 +4,25 @@ import {dbConnection, loadSeeds} from '@tests/integration/server/database-utils'
 import {server} from '@tests/integration/server/server-utils';
 import {expect} from 'chai';
 import {join} from 'path';
+import {Response} from 'superagent';
 import {globalHooks} from '../global-hooks';
+
+function buildSearchCase(filterName: string, query: object, expectedLength: number, expected?: (res: Response) => void) {
+  it(`should filter by ${filterName}`, async () => {
+    const res = await server
+      .get('/api/case')
+      .query(query)
+      .set('Accept', 'application/json')
+      .expect('Content-Type', /json/)
+      .expect(200);
+
+    expect(res.body).to.have.property('data');
+    expect(res.body.data).to.have.property('length', expectedLength);
+    if (expected) {
+      expected(res);
+    }
+  });
+}
 
 describe('Case api', () => {
   globalHooks();
@@ -28,13 +46,24 @@ describe('Case api', () => {
         .expect(200);
 
       expect(res.body).to.have.property('data');
-      expect(res.body.data).to.have.property('length', 5);
+      expect(res.body.data).to.have.property('length', 9);
     });
 
     it('should validate request', async () => {
       const res = await server
         .get('/api/case')
         .query({resolved: 'boolean'})
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/)
+        .expect(400);
+
+      expect(res.body).to.have.property('error');
+    });
+
+    it('should validate unsupported type', async () => {
+      const res = await server
+        .get('/api/case')
+        .query({type: 'Unknown bike type'})
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
         .expect(400);
@@ -62,9 +91,14 @@ describe('Case api', () => {
         expect(res.body.data).to.have.property('length', 1);
       });
 
-      it('should filter by ....', async () => {
-        throw new Error('Not implemented');
+      buildSearchCase('owner name', {ownerName: 'owner1'}, 1);
+      buildSearchCase('owner name, partial', {ownerName: 'John'}, 2);
+      buildSearchCase('type', {type: 'TimeTrial'}, 0);
+      buildSearchCase('unassigned', {policeId: ''}, 6);
+      buildSearchCase('by police officer id', {policeId: 2}, 1, res => {
+        expect(res.body.data[0]).to.have.property('policeOfficerName', 'test2');
       });
+      buildSearchCase('owner name and type', {ownerName: 'John', type: 'Road'}, 1);
     });
   });
 
@@ -156,6 +190,7 @@ describe('Case api', () => {
         ownerName: 'John Doe',
         licenseNumber: '123abc456',
         color: 'black',
+        date: new Date(),
         type: TBikeType.Mountain,
         theftDescription: 'Some description'
       };
