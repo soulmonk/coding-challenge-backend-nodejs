@@ -10,6 +10,8 @@ export const initTestDbConnection = () => {
   DBConnection.init(testDBConfig);
 };
 
+initTestDbConnection();
+
 export function schemaMigration() {
   return DBConnection.getInstance().sync({force: true});
 }

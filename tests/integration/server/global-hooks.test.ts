@@ -1,12 +1,10 @@
 import {DBConnection} from '@models/index';
 import {logger} from '@services/logger';
-import {initTestDbConnection, schemaMigration} from './database-utils';
+import {schemaMigration} from './database-utils';
 import {appServer} from './server-utils';
 
 before(async function() {
   this.timeout(5000);
-  initTestDbConnection();
-  await appServer.listen();
   logger.info('Initializing database migration.');
   await schemaMigration();
 });

@@ -6,7 +6,7 @@ import {routes as healthRoutes} from './health/routes';
 import bodyParser from './middleware/bodyParser';
 import errorHandler from './middleware/errorHandler';
 import {default as loggerMiddleware} from './middleware/logger';
-import {routes as policeRoutes} from './police/routes';
+import {routes as officerRoutes} from './officer/routes';
 
 function notFound(ctx: Context) {
   ctx.status = 404;
@@ -24,7 +24,7 @@ export const creatRouter = (): Router => {
     .use(bodyParser());
 
   healthRoutes(router);
-  policeRoutes(router);
+  officerRoutes(router);
   caseRoutes(router);
 
   router.use(notFound);

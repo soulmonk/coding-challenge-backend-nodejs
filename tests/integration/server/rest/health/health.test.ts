@@ -1,12 +1,11 @@
-import {getServer} from '@tests/integration/server/server-utils';
 import {expect} from 'chai';
 import * as request from 'supertest';
-// import {} from '../global-hooks.test';
+import {server} from '../../server-utils';
 
 describe('health api', () => {
 
   it('should return 200 ok', async () => {
-    const res: request.Response = await getServer()
+    const res: request.Response = await server
       .get('/api/live')
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)

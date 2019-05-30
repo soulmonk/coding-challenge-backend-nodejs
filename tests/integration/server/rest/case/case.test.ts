@@ -1,16 +1,15 @@
 import {Case, TBikeType} from '@models/Case';
-import {Police} from '@models/Police';
-import {loadSeeds, schemaMigration} from '@tests/integration/server/database-utils';
-import {getServer} from '@tests/integration/server/server-utils';
+import {Officer} from '@models/Officer';
 import {expect} from 'chai';
 import * as config from 'config';
 import {join} from 'path';
 import {Response} from 'superagent';
-// import {} from '../global-hooks.test';
+import {loadSeeds, schemaMigration} from '../../database-utils';
+import {server} from '../../server-utils';
 
 function buildSearchCase(filterName: string, query: object, expectedLength: number, expected?: (res: Response) => void) {
   it(`should filter by ${filterName}`, async () => {
-    const res = await getServer()
+    const res = await server
       .get('/api/case')
       .query(query)
       .set('Accept', 'application/json')
@@ -26,11 +25,15 @@ function buildSearchCase(filterName: string, query: object, expectedLength: numb
 }
 
 describe('Case api', () => {
+  before(async () => {
+    await schemaMigration();
+  });
+
   describe('#list', () => {
 
     before(async () => {
       // load seeds
-      return loadSeeds(join(config.get('root'), '/tests/integration/server/controllers/case-search.seeds.sql'));
+      return loadSeeds(join(config.get('root'), '/tests/integration/server/rest/case/case-search.seeds.sql'));
     });
 
     after(async () => {
@@ -38,7 +41,7 @@ describe('Case api', () => {
     });
 
     it('should return list', async () => {
-      const res = await getServer()
+      const res = await server
         .get('/api/case')
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
@@ -49,7 +52,7 @@ describe('Case api', () => {
     });
 
     it('should validate request', async () => {
-      const res = await getServer()
+      const res = await server
         .get('/api/case')
         .query({resolved: 'boolean'})
         .set('Accept', 'application/json')
@@ -60,7 +63,7 @@ describe('Case api', () => {
     });
 
     it('should validate unsupported type', async () => {
-      const res = await getServer()
+      const res = await server
         .get('/api/case')
         .query({type: 'Unknown bike type'})
         .set('Accept', 'application/json')
@@ -72,7 +75,7 @@ describe('Case api', () => {
 
     describe('search', () => {
       it('should filter by name', async () => {
-        const res = await getServer()
+        const res = await server
           .get('/api/case')
           .query({ownerName: 'owner1'})
           .set('Accept', 'application/json')
@@ -83,15 +86,11 @@ describe('Case api', () => {
         expect(res.body.data).to.have.property('length', 1);
       });
 
-      it('should filter by officer', async () => {
-        throw new Error('Not implemented');
-      });
-
       buildSearchCase('owner name', {ownerName: 'owner1'}, 1);
       buildSearchCase('owner name, partial', {ownerName: 'John'}, 2);
       buildSearchCase('type', {type: 'TimeTrial'}, 0);
-      buildSearchCase('unassigned', {policeId: ''}, 6);
-      buildSearchCase('by police officer id', {policeId: 2}, 1, res => {
+      buildSearchCase('unassigned', {officerId: ''}, 6);
+      buildSearchCase('by officer officer id', {officerId: 2}, 1, res => {
         expect(res.body.data[0]).to.have.property('policeOfficerName', 'test2');
       });
       buildSearchCase('owner name and type', {ownerName: 'John', type: 'Road'}, 1);
@@ -106,7 +105,7 @@ describe('Case api', () => {
     describe('validation', () => {
 
       it('should be not valid with empty body', async () => {
-        const res = await getServer()
+        const res = await server
           .post('/api/case')
           .send({})
           .set('Accept', 'application/json')
@@ -128,7 +127,7 @@ describe('Case api', () => {
           additionalField: 'some injection'
         };
 
-        const res = await getServer()
+        const res = await server
           .post('/api/case')
           .send(data)
           .set('Accept', 'application/json')
@@ -151,7 +150,7 @@ describe('Case api', () => {
         theftDescription: 'Some description'
       };
 
-      const res = await getServer()
+      const res = await server
         .post('/api/case')
         .send(data)
         .set('Accept', 'application/json')
@@ -180,7 +179,7 @@ describe('Case api', () => {
     });
 
     it('should auto-assign case', async () => {
-      const policeOfficer = await Police.create({fullName: 'test1'});
+      const policeOfficer = await Officer.create({fullName: 'test1'});
 
       const data = {
         ownerName: 'John Doe',
@@ -191,7 +190,7 @@ describe('Case api', () => {
         theftDescription: 'Some description'
       };
 
-      const res = await getServer()
+      const res = await server
         .post('/api/case')
         .send(data)
         .set('Accept', 'application/json')
@@ -213,7 +212,7 @@ describe('Case api', () => {
     });
 
     it('should resolve case', async () => {
-      const policeOfficer = await Police.create({fullName: 'test1'});
+      const policeOfficer = await Officer.create({fullName: 'test1'});
       const caseModel = await Case.create({
         ownerName: 'John Doe',
         licenseNumber: '123abc456',
@@ -224,7 +223,7 @@ describe('Case api', () => {
 
       await policeOfficer.setCase(caseModel);
 
-      const res = await getServer()
+      const res = await server
         .put('/api/case/' + caseModel.id)
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
@@ -247,17 +246,17 @@ describe('Case api', () => {
         theftDescription: 'Some description'
       });
 
-      const res = await getServer()
+      const res = await server
         .put('/api/case/' + caseModel.id)
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
         .expect(400);
 
-      expect(res.body).to.have.property('error', 'Could not resolve case without police officer');
+      expect(res.body).to.have.property('error', 'Could not resolve case without officer officer');
     });
 
     it('should auto-assign case', async () => {
-      const policeOfficer = await Police.create({fullName: 'test1'});
+      const policeOfficer = await Officer.create({fullName: 'test1'});
       const caseModel = await Case.create({
         ownerName: 'John Doe',
         licenseNumber: '123abc456',
@@ -276,7 +275,7 @@ describe('Case api', () => {
 
       await policeOfficer.setCase(caseModel);
 
-      const res = await getServer()
+      const res = await server
         .put('/api/case/' + caseModel.id)
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
@@ -284,8 +283,8 @@ describe('Case api', () => {
 
       expect(res.body).to.have.property('data');
 
-      const assignedCase = await Case.findByPk(unassignedCase.id, {include: [Case.associations.police]});
-      expect(assignedCase.police).to.have.property('id', policeOfficer.id);
+      const assignedCase = await Case.findByPk(unassignedCase.id, {include: [Case.associations.officer]});
+      expect(assignedCase.officer).to.have.property('id', policeOfficer.id);
     });
   });
 });

@@ -2,7 +2,7 @@
 ----
   http://3.213.157.50
   
-## **List Police Officers**
+## **List Officer Officers**
   Returns json data about police officers.
 
 * **URL**
@@ -25,7 +25,7 @@
       }]}
 
 
-## **Create Police Officer**
+## **Create Officer Officer**
    Hire police officer
    
 * **URL**
@@ -60,7 +60,7 @@
    **Content:** `{ error : "Not valid body" }`
 
 
-## **Remove Police Officer**
+## **Remove Officer Officer**
   
   Fire police officer
   
@@ -86,7 +86,7 @@
 * **Error Response:**
 
  * **Code:** 400 BAD REQUEST <br />
-   **Content:** `{ error : "Police officer has a case: [NUMBER]" }`
+   **Content:** `{ error : "Officer officer has a case: [NUMBER]" }`
 
    OR
  
@@ -113,7 +113,7 @@
   `ownerName=[string]` \
   `color=[string]` \
   `resolved=[boolean]` \
-  `policeId=[number]` - or empty value for get unassigned cases\
+  `officerId=[number]` - or empty value for get unassigned cases\
 
 * **Success Response:**
 

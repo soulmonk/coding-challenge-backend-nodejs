@@ -38,12 +38,9 @@ export class ApplicationServer {
     });
   }
 
-  async listen() {
-    await new Promise(resolve => {
-      this._server = this._app.listen(this._config.port, () => {
-        logger.info('Server running on port ' + this._config.port);
-        resolve();
-      });
+  listen() {
+    this._server = this._app.listen(this._config.port, () => {
+      logger.info('Server running on port ' + this._config.port);
     });
 
     return this._server;

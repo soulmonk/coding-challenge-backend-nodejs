@@ -16,7 +16,7 @@ export function routes(main: Router): Router {
     validate({params: validators.remove}),
     controller.remove);
 
-  main.use('/police', router.routes());
+  main.use('/officer', router.routes());
 
   return main;
 }

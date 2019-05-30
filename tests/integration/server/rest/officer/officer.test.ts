@@ -1,11 +1,14 @@
 import {Case, TBikeType} from '@models/Case';
-import {Police} from '@models/Police';
-import {getServer} from '@tests/integration/server/server-utils';
+import {Officer} from '@models/Officer';
 import {expect} from 'chai';
-import {schemaMigration} from '../database-utils';
-// import {} from '../global-hooks.test';
+import {schemaMigration} from '../../database-utils';
+import {server} from '../../server-utils';
 
-describe('Police api', () => {
+describe('Officer api', () => {
+  before(async () => {
+    await schemaMigration();
+  });
+
   describe('hire', async () => {
 
     afterEach(async () => {
@@ -13,11 +16,11 @@ describe('Police api', () => {
     });
 
     it('should return list', async () => {
-      await Police.create({fullName: 'test1'});
-      await Police.create({fullName: 'test2'});
+      await Officer.create({fullName: 'test1'});
+      await Officer.create({fullName: 'test2'});
 
-      const res = await getServer()
-        .get('/api/police')
+      const res = await server
+        .get('/api/officer')
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
         .expect(200);
@@ -39,13 +42,13 @@ describe('Police api', () => {
     });
 
     it('should return list with case', async () => {
-      const police = await Police.create({fullName: 'test1'});
-      await Police.create({fullName: 'test2'});
+      const officer = await Officer.create({fullName: 'test1'});
+      await Officer.create({fullName: 'test2'});
       const case1 = await Case.create({ownerName: 'test1', type: TBikeType.Commuting});
-      await police.setCase(case1);
+      await officer.setCase(case1);
 
-      const res = await getServer()
-        .get('/api/police')
+      const res = await server
+        .get('/api/officer')
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
         .expect(200);
@@ -67,8 +70,8 @@ describe('Police api', () => {
     });
 
     it('should not be created without name', async () => {
-      const res = await getServer()
-        .post('/api/police')
+      const res = await server
+        .post('/api/officer')
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
         .expect(400);
@@ -76,13 +79,13 @@ describe('Police api', () => {
       expect(res.body).to.have.property('data');
     });
 
-    it('should create police officer record', async () => {
+    it('should create officer officer record', async () => {
       const data = {
         fullName: 'test'
       };
 
-      const res = await getServer()
-        .post('/api/police')
+      const res = await server
+        .post('/api/officer')
         .send(data)
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
@@ -91,12 +94,12 @@ describe('Police api', () => {
       expect(res.body).to.have.property('data');
 
       const record = res.body.data;
-      const policeProperties = [
+      const officerProperties = [
         'id',
         'fullName',
         'caseId'
       ];
-      expect(record).to.have.all.keys(policeProperties);
+      expect(record).to.have.all.keys(officerProperties);
       expect(record.id).to.be.equal(1);
     });
 
@@ -106,8 +109,8 @@ describe('Police api', () => {
         fullName: 'test'
       };
 
-      const res = await getServer()
-        .post('/api/police')
+      const res = await server
+        .post('/api/officer')
         .send(data)
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
@@ -124,21 +127,21 @@ describe('Police api', () => {
       await schemaMigration();
     });
 
-    it('should remove police officer record', async () => {
-      const police = await Police.create({fullName: 'test1'});
+    it('should remove officer officer record', async () => {
+      const officer = await Officer.create({fullName: 'test1'});
 
-      await getServer()
-        .delete('/api/police/' + police.id)
+      await server
+        .delete('/api/officer/' + officer.id)
         .set('Accept', 'application/json')
         .expect(204);
 
-      const removedRecord = await Police.findByPk(police.id);
+      const removedRecord = await Officer.findByPk(officer.id);
       expect(removedRecord).to.be.null;
     });
 
     it('should return 404 if no record', async () => {
-      const res = await getServer()
-        .delete('/api/police/10000')
+      const res = await server
+        .delete('/api/officer/10000')
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
         .expect(404);
@@ -147,36 +150,36 @@ describe('Police api', () => {
     });
 
     it('should not allow not string id', async () => {
-      const police = await Police.create({fullName: 'test1'});
+      const officer = await Officer.create({fullName: 'test1'});
 
-      const res = await getServer()
-        .delete('/api/police/some_id' + police.id)
+      const res = await server
+        .delete('/api/officer/some_id' + officer.id)
         .set('Accept', 'application/json')
         .expect(400);
 
-      const removedRecord = await Police.findByPk(police.id);
+      const removedRecord = await Officer.findByPk(officer.id);
       expect(removedRecord).to.be.not.null;
-      expect(removedRecord.id).to.be.equal(police.id);
+      expect(removedRecord.id).to.be.equal(officer.id);
 
       expect(res.body).to.have.property('error');
       // todo contain validation error
     });
 
-    it('should not remove police officer record if one is assign with case', async () => {
-      const police = await Police.create({fullName: 'test1'});
+    it('should not remove officer officer record if one is assign with case', async () => {
+      const officer = await Officer.create({fullName: 'test1'});
       const case1 = await Case.create({ownerName: 'test1', type: TBikeType.Commuting});
-      await police.setCase(case1);
+      await officer.setCase(case1);
 
-      const res = await getServer()
-        .delete('/api/police/' + police.id)
+      const res = await server
+        .delete('/api/officer/' + officer.id)
         .set('Accept', 'application/json')
         .expect(400);
 
-      const removedRecord = await Police.findByPk(police.id);
+      const removedRecord = await Officer.findByPk(officer.id);
       expect(removedRecord).to.be.not.null;
-      expect(removedRecord.id).to.be.equal(police.id);
+      expect(removedRecord.id).to.be.equal(officer.id);
 
-      expect(res.body).to.have.property('error', 'Police officer has a case: ' + case1.id);
+      expect(res.body).to.have.property('error', 'Officer officer has a case: ' + case1.id);
     });
   });
 

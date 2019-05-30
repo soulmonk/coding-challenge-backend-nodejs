@@ -1,4 +1,4 @@
-import {PoliceService as Service} from '@services/police';
+import {OfficerService as Service} from '@services/officer';
 import {Context} from 'koa';
 
 export async function list(ctx: Context) {
