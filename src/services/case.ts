@@ -68,7 +68,7 @@ export class CaseService {
 
     const assignPoliceOfficer = await record.getOfficer();
     if (!assignPoliceOfficer) {
-      throw new Error('Could not resolve case without officer officer');
+      throw new Error('Could not resolve case without police officer');
     }
 
     record.resolved = true;

@@ -79,7 +79,7 @@ describe('Officer api', () => {
       expect(res.body).to.have.property('data');
     });
 
-    it('should create officer officer record', async () => {
+    it('should create police officer record', async () => {
       const data = {
         fullName: 'test'
       };
@@ -127,7 +127,7 @@ describe('Officer api', () => {
       await schemaMigration();
     });
 
-    it('should remove officer officer record', async () => {
+    it('should remove police officer record', async () => {
       const officer = await Officer.create({fullName: 'test1'});
 
       await server
@@ -165,7 +165,7 @@ describe('Officer api', () => {
       // todo contain validation error
     });
 
-    it('should not remove officer officer record if one is assign with case', async () => {
+    it('should not remove police officer record if one is assign with case', async () => {
       const officer = await Officer.create({fullName: 'test1'});
       const case1 = await Case.create({ownerName: 'test1', type: TBikeType.Commuting});
       await officer.setCase(case1);
@@ -179,7 +179,7 @@ describe('Officer api', () => {
       expect(removedRecord).to.be.not.null;
       expect(removedRecord.id).to.be.equal(officer.id);
 
-      expect(res.body).to.have.property('error', 'Officer officer has a case: ' + case1.id);
+      expect(res.body).to.have.property('error', 'Police officer has a case: ' + case1.id);
     });
   });
 

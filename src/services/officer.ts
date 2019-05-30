@@ -44,7 +44,7 @@ export class OfficerService {
 
     const assignedCase = await officer.getCase();
     if (assignedCase) {
-      throw new Error('Officer officer has a case: ' + assignedCase.id);
+      throw new Error('Police officer has a case: ' + assignedCase.id);
     }
 
     return officer.destroy();

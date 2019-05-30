@@ -90,7 +90,7 @@ describe('Case api', () => {
       buildSearchCase('owner name, partial', {ownerName: 'John'}, 2);
       buildSearchCase('type', {type: 'TimeTrial'}, 0);
       buildSearchCase('unassigned', {officerId: ''}, 6);
-      buildSearchCase('by officer officer id', {officerId: 2}, 1, res => {
+      buildSearchCase('by police officer id', {officerId: 2}, 1, res => {
         expect(res.body.data[0]).to.have.property('policeOfficerName', 'test2');
       });
       buildSearchCase('owner name and type', {ownerName: 'John', type: 'Road'}, 1);
@@ -252,7 +252,7 @@ describe('Case api', () => {
         .expect('Content-Type', /json/)
         .expect(400);
 
-      expect(res.body).to.have.property('error', 'Could not resolve case without officer officer');
+      expect(res.body).to.have.property('error', 'Could not resolve case without police officer');
     });
 
     it('should auto-assign case', async () => {
