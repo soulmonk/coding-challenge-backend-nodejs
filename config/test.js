@@ -8,7 +8,8 @@ module.exports = {
     password: 'toor',
     options: {
       host: '127.0.0.1',
-      dialect: 'postgres'
+      dialect: 'postgres',
+      logging: false
       // 'operatorsAliases': false
     }
   }

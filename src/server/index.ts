@@ -2,10 +2,7 @@ import {logger} from '@services/logger';
 import {Server} from 'http';
 import * as Koa from 'koa';
 import {TServerConfiguration} from './configuration';
-import bodyParser from './middleware/bodyParser';
-import errorHandler from './middleware/errorHandler';
-import {default as loggerMiddleware} from './middleware/logger';
-import {creatRouter} from './routes';
+import {RestServer} from './rest';
 
 export class ApplicationServer {
   private readonly _app: Koa;
@@ -23,35 +20,36 @@ export class ApplicationServer {
     return this._app;
   }
 
-  listen() {
-    this._server = this._app.listen(this._config.port, () => {
-      logger.info('Server running on port ' + this._config.port);
+  get server() {
+    return this._server;
+  }
+
+  disconnect() {
+    if (!this.server) {
+      return Promise.resolve();
+    }
+    return new Promise((resolve, reject) => {
+      this._server.close(err => {
+        if (err) {
+          return reject(err);
+        }
+        resolve();
+      });
+    });
+  }
+
+  async listen() {
+    await new Promise(resolve => {
+      this._server = this._app.listen(this._config.port, () => {
+        logger.info('Server running on port ' + this._config.port);
+        resolve();
+      });
     });
 
     return this._server;
   }
 
-  server() {
-    return this._server;
-  }
-
   private init() {
-    this.initMiddleware();
-    this.initWebApi();
-  }
-
-  private initMiddleware() {
-    this._app
-      .use(loggerMiddleware())
-      .use(errorHandler())
-      .use(bodyParser());
-  }
-
-  private initWebApi() {
-    const router = creatRouter();
-
-    this._app
-      .use(router.routes())
-      .use(router.allowedMethods());
+    RestServer(this._app);
   }
 }

@@ -1,24 +1,22 @@
 import {Case, TBikeType} from '@models/Case';
 import {Police} from '@models/Police';
-import {dbConnection} from '@tests/integration/server/database-utils';
-import {server} from '@tests/integration/server/server-utils';
+import {getServer} from '@tests/integration/server/server-utils';
 import {expect} from 'chai';
-import {globalHooks} from '../global-hooks';
+import {schemaMigration} from '../database-utils';
+// import {} from '../global-hooks.test';
 
 describe('Police api', () => {
-  globalHooks();
-
   describe('hire', async () => {
 
     afterEach(async () => {
-      await dbConnection.sync({force: true});
+      await schemaMigration();
     });
 
     it('should return list', async () => {
       await Police.create({fullName: 'test1'});
       await Police.create({fullName: 'test2'});
 
-      const res = await server
+      const res = await getServer()
         .get('/api/police')
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
@@ -46,7 +44,7 @@ describe('Police api', () => {
       const case1 = await Case.create({ownerName: 'test1', type: TBikeType.Commuting});
       await police.setCase(case1);
 
-      const res = await server
+      const res = await getServer()
         .get('/api/police')
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
@@ -69,7 +67,7 @@ describe('Police api', () => {
     });
 
     it('should not be created without name', async () => {
-      const res = await server
+      const res = await getServer()
         .post('/api/police')
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
@@ -83,7 +81,7 @@ describe('Police api', () => {
         fullName: 'test'
       };
 
-      const res = await server
+      const res = await getServer()
         .post('/api/police')
         .send(data)
         .set('Accept', 'application/json')
@@ -108,7 +106,7 @@ describe('Police api', () => {
         fullName: 'test'
       };
 
-      const res = await server
+      const res = await getServer()
         .post('/api/police')
         .send(data)
         .set('Accept', 'application/json')
@@ -123,13 +121,13 @@ describe('Police api', () => {
   describe('fire', async () => {
 
     afterEach(async () => {
-      await dbConnection.sync({force: true});
+      await schemaMigration();
     });
 
     it('should remove police officer record', async () => {
       const police = await Police.create({fullName: 'test1'});
 
-      await server
+      await getServer()
         .delete('/api/police/' + police.id)
         .set('Accept', 'application/json')
         .expect(204);
@@ -139,7 +137,7 @@ describe('Police api', () => {
     });
 
     it('should return 404 if no record', async () => {
-      const res = await server
+      const res = await getServer()
         .delete('/api/police/10000')
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
@@ -151,7 +149,7 @@ describe('Police api', () => {
     it('should not allow not string id', async () => {
       const police = await Police.create({fullName: 'test1'});
 
-      const res = await server
+      const res = await getServer()
         .delete('/api/police/some_id' + police.id)
         .set('Accept', 'application/json')
         .expect(400);
@@ -169,7 +167,7 @@ describe('Police api', () => {
       const case1 = await Case.create({ownerName: 'test1', type: TBikeType.Commuting});
       await police.setCase(case1);
 
-      const res = await server
+      const res = await getServer()
         .delete('/api/police/' + police.id)
         .set('Accept', 'application/json')
         .expect(400);

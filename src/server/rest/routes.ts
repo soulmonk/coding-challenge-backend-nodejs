@@ -1,9 +1,12 @@
 import {Context} from 'koa';
 import * as Router from 'koa-router';
+import {routes as caseRoutes} from './case/routes';
 
 import {routes as healthRoutes} from './health/routes';
+import bodyParser from './middleware/bodyParser';
+import errorHandler from './middleware/errorHandler';
+import {default as loggerMiddleware} from './middleware/logger';
 import {routes as policeRoutes} from './police/routes';
-import {routes as caseRoutes} from './case/routes';
 
 function notFound(ctx: Context) {
   ctx.status = 404;
@@ -12,6 +15,13 @@ function notFound(ctx: Context) {
 
 export const creatRouter = (): Router => {
   const router = new Router();
+
+  router.prefix('/api');
+
+  router
+    .use(loggerMiddleware())
+    .use(errorHandler())
+    .use(bodyParser());
 
   healthRoutes(router);
   policeRoutes(router);

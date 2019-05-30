@@ -1,15 +1,16 @@
 import {Case, TBikeType} from '@models/Case';
 import {Police} from '@models/Police';
-import {dbConnection, loadSeeds} from '@tests/integration/server/database-utils';
-import {server} from '@tests/integration/server/server-utils';
+import {loadSeeds, schemaMigration} from '@tests/integration/server/database-utils';
+import {getServer} from '@tests/integration/server/server-utils';
 import {expect} from 'chai';
+import * as config from 'config';
 import {join} from 'path';
 import {Response} from 'superagent';
-import {globalHooks} from '../global-hooks';
+// import {} from '../global-hooks.test';
 
 function buildSearchCase(filterName: string, query: object, expectedLength: number, expected?: (res: Response) => void) {
   it(`should filter by ${filterName}`, async () => {
-    const res = await server
+    const res = await getServer()
       .get('/api/case')
       .query(query)
       .set('Accept', 'application/json')
@@ -25,21 +26,19 @@ function buildSearchCase(filterName: string, query: object, expectedLength: numb
 }
 
 describe('Case api', () => {
-  globalHooks();
-
   describe('#list', () => {
 
     before(async () => {
       // load seeds
-      return loadSeeds(join(__dirname, 'case-search.seeds.sql'));
+      return loadSeeds(join(config.get('root'), '/tests/integration/server/controllers/case-search.seeds.sql'));
     });
 
     after(async () => {
-      await dbConnection.sync({force: true});
+      await schemaMigration();
     });
 
     it('should return list', async () => {
-      const res = await server
+      const res = await getServer()
         .get('/api/case')
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
@@ -50,7 +49,7 @@ describe('Case api', () => {
     });
 
     it('should validate request', async () => {
-      const res = await server
+      const res = await getServer()
         .get('/api/case')
         .query({resolved: 'boolean'})
         .set('Accept', 'application/json')
@@ -61,7 +60,7 @@ describe('Case api', () => {
     });
 
     it('should validate unsupported type', async () => {
-      const res = await server
+      const res = await getServer()
         .get('/api/case')
         .query({type: 'Unknown bike type'})
         .set('Accept', 'application/json')
@@ -73,7 +72,7 @@ describe('Case api', () => {
 
     describe('search', () => {
       it('should filter by name', async () => {
-        const res = await server
+        const res = await getServer()
           .get('/api/case')
           .query({ownerName: 'owner1'})
           .set('Accept', 'application/json')
@@ -101,13 +100,13 @@ describe('Case api', () => {
 
   describe('#report a stolen bike', () => {
     afterEach(async () => {
-      await dbConnection.sync({force: true});
+      await schemaMigration();
     });
 
     describe('validation', () => {
 
       it('should be not valid with empty body', async () => {
-        const res = await server
+        const res = await getServer()
           .post('/api/case')
           .send({})
           .set('Accept', 'application/json')
@@ -129,7 +128,7 @@ describe('Case api', () => {
           additionalField: 'some injection'
         };
 
-        const res = await server
+        const res = await getServer()
           .post('/api/case')
           .send(data)
           .set('Accept', 'application/json')
@@ -152,7 +151,7 @@ describe('Case api', () => {
         theftDescription: 'Some description'
       };
 
-      const res = await server
+      const res = await getServer()
         .post('/api/case')
         .send(data)
         .set('Accept', 'application/json')
@@ -192,7 +191,7 @@ describe('Case api', () => {
         theftDescription: 'Some description'
       };
 
-      const res = await server
+      const res = await getServer()
         .post('/api/case')
         .send(data)
         .set('Accept', 'application/json')
@@ -210,7 +209,7 @@ describe('Case api', () => {
 
   describe('#resolve', () => {
     afterEach(async () => {
-      await dbConnection.sync({force: true});
+      await schemaMigration();
     });
 
     it('should resolve case', async () => {
@@ -225,7 +224,7 @@ describe('Case api', () => {
 
       await policeOfficer.setCase(caseModel);
 
-      const res = await server
+      const res = await getServer()
         .put('/api/case/' + caseModel.id)
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
@@ -248,7 +247,7 @@ describe('Case api', () => {
         theftDescription: 'Some description'
       });
 
-      const res = await server
+      const res = await getServer()
         .put('/api/case/' + caseModel.id)
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
@@ -277,7 +276,7 @@ describe('Case api', () => {
 
       await policeOfficer.setCase(caseModel);
 
-      const res = await server
+      const res = await getServer()
         .put('/api/case/' + caseModel.id)
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)

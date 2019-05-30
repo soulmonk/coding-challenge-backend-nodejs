@@ -1,16 +1,15 @@
 import {DBConnection} from '@models/index';
+import {ApplicationServer} from '@server/index';
 import {logger} from '@services/logger';
 
 import * as config from 'config';
-import {ApplicationServer} from './server';
 
 async function init() {
   const dbConnection = DBConnection.init(config.get('db'));
   await dbConnection.sync();
 
   const server = new ApplicationServer(config.get('server'));
-  server.listen();
-
+  await server.listen();
 }
 
 init()

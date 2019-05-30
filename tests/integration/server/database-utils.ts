@@ -4,17 +4,19 @@ import * as config from 'config';
 import {readFileSync} from 'fs';
 import {QueryTypes} from 'sequelize';
 
-const testDBConfig: TDBConfiguration = config.get('db');
+export const initTestDbConnection = () => {
+  const testDBConfig: TDBConfiguration = config.get('db');
 
-export const dbConnection = DBConnection.init(testDBConfig);
+  DBConnection.init(testDBConfig);
+};
 
 export function schemaMigration() {
-  return dbConnection.sync({force: true});
+  return DBConnection.getInstance().sync({force: true});
 }
 
 export function loadSeeds(path: string) {
   const query = readFileSync(path, 'utf8');
-  return dbConnection.sequelize.query(query, {raw: true, type: QueryTypes.INSERT});
+  return DBConnection.getInstance().sequelize.query(query, {raw: true, type: QueryTypes.INSERT});
 }
 
 /*
