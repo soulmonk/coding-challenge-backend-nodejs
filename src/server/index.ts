@@ -1,6 +1,6 @@
 import {logger} from '@services/logger';
 import {Server} from 'http';
-import * as Koa from 'koa';
+import Koa = require('koa');
 import {Pool} from 'pg';
 import {postgraphile} from 'postgraphile';
 import {TServerConfiguration} from './configuration';

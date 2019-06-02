@@ -6,10 +6,10 @@
     "moduleResolution": "node",
     "outDir": "./dist",
     "sourceMap": true,
+    "esModuleInterop": true,
     "baseUrl": ".",
     "typeRoots": [
-      "node_modules/@types",
-      "src/graphql/__typedefs/graphqlTypes.d.ts"
+      "node_modules/@types"
     ],
     "paths": {
       "@tests/*": [

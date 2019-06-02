@@ -1,4 +1,4 @@
-import * as logger from 'koa-logger';
+import logger = require('koa-logger');
 import {IMiddleware} from 'koa-router';
 
 export default (): IMiddleware => logger();

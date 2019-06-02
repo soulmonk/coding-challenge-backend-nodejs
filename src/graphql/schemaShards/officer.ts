@@ -5,23 +5,24 @@ import {pubsub} from '../subscriptionManager';
 
 const typeDefs = gql`
   extend type Query {
-    " get all posts "
+    " get all officers "
     getOfficers: [Officer]
   }
 
   extend type Mutation {
-    " create a new post "
+    " create a new officer "
     createOfficer(input: InputCreateOfficer!): Officer
   }
 
+  
   extend type Subscription {
-    " called when a new post is created "
+    " called when a new officer is created "
     officerCreated: Officer
   }
 
-  " input to create a new post "
+  " input to create a new officer "
   input InputCreateOfficer {
-    text: String
+    fullName: String
   }
 
   type Officer {
@@ -40,6 +41,7 @@ export default {
       // create a post
       createOfficer: async (root: any, {input}: GQL.MutationToCreateOfficerArgs, context: any) => {
         // create a new post in the database
+        console.log('a');
         const post = await OfficerService.create(input as IOfficer);
         // publish the post to the subscribers
         pubsub.publish('officerCreated', {
@@ -49,7 +51,7 @@ export default {
       }
     },
     Subscription: {
-      caseCreated: {
+      officerCreated: {
         subscribe: (root: any, args: any, context: any) => {
           return pubsub.asyncIterator('officerCreated');
         }

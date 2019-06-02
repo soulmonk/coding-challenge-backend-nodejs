@@ -1,4 +1,4 @@
-import * as config from 'config';
+import config = require('config');
 import {join} from 'path';
 import {createLogger, format, Logger, LoggerOptions, transports} from 'winston';
 

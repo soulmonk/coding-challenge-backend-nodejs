@@ -1,5 +1,5 @@
 import {ApolloServer, Config, makeExecutableSchema} from 'apollo-server-koa';
-import * as Koa from 'koa';
+import Koa = require('koa');
 import {rawSchema} from '../../graphql';
 import {handleGraphQLContext, handleGraphQLSubscriptionContext} from './context-handler';
 

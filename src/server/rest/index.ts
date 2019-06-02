@@ -1,4 +1,4 @@
-import * as Koa from 'koa';
+import Koa = require('koa');
 import {creatRouter} from './routes';
 
 export const RestServer = (app: Koa) => {

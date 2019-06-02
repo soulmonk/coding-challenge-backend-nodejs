@@ -7,10 +7,17 @@
           "dev": {
             "url": "http://127.0.0.1:53290/graphql",
             "subscription": "http://127.0.0.1:53290/graphql/subscriptions"
-          },
-          "prod": {
-            "url": "http://127.0.0.1:53200/graphql",
-            "subscription": "http://127.0.0.1:53200/graphql/subscriptions"
+          }
+        }
+      }
+    },
+    "graphql-postgraphile": {
+      "schemaPath": "./src/graphql/__typedefs/postgraphile_schema.graphql",
+      "extensions": {
+        "endpoints": {
+          "main": {
+            "url": "http://127.0.0.1:53290/postgraphile_graphql",
+            "subscription": "http://127.0.0.1:53290/postgraphile_graphql/subscriptions"
           }
         }
       }

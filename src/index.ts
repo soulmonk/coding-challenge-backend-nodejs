@@ -2,7 +2,7 @@ import {DBConnection} from '@models/index';
 import {ApplicationServer} from '@server/index';
 import {logger} from '@services/logger';
 
-import * as config from 'config';
+import config = require('config');
 
 async function init() {
   const dbConnection = DBConnection.init(config.get('db'));

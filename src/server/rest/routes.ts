@@ -1,5 +1,5 @@
 import {Context} from 'koa';
-import * as Router from 'koa-router';
+import Router = require('koa-router');
 import {routes as caseRoutes} from './case/routes';
 
 import {routes as healthRoutes} from './health/routes';

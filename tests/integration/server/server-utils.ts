@@ -1,6 +1,6 @@
 import {ApplicationServer} from '@server/index';
 import * as config from 'config';
-import * as request from 'supertest';
+import request = require('supertest');
 
 export const appServer: ApplicationServer = new ApplicationServer(config.get('server'));
 export const testServerInstance = appServer.listen();

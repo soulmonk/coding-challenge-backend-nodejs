@@ -1,4 +1,4 @@
-import * as Joi from '@hapi/joi';
+import Joi = require('@hapi/joi');
 import {TBikeType} from '@models/Case';
 
 const BikeTypes = Object.values(TBikeType);

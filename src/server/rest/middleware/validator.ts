@@ -1,4 +1,4 @@
-import * as Joi from '@hapi/joi';
+import Joi = require('@hapi/joi');
 import {logger} from '@services/logger';
 import {constants} from 'http2';
 import {Context} from 'koa';

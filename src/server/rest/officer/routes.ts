@@ -1,4 +1,4 @@
-import * as Router from 'koa-router';
+import Router = require('koa-router');
 import {validate} from '../middleware/validator';
 import * as controller from './controller';
 import * as validators from './validators';
