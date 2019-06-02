@@ -21,7 +21,7 @@ export class CaseService {
     };
   }
 
-  static async list(query: {[key: string]: string | number}): Promise<ICase[]> {
+  static async list(query: {[key: string]: string | number} = {}): Promise<ICase[]> {
     const where: any = {};
 
     if (query.ownerName) {
@@ -82,5 +82,10 @@ export class CaseService {
     }
 
     return this.toPublic(saved);
+  }
+
+  static async one(id: number): Promise<ICase> {
+    const record = await Case.findByPk(id);
+    return this.toPublic(record);
   }
 }

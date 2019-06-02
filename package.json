@@ -8,6 +8,8 @@
     "start": "node -r ./scripts/tsconfig-paths-bootstrap.js dist/src/index.js",
     "ts-start": "ts-node -r tsconfig-paths/register ./src/index.ts",
     "watch-server": "nodemon --watch 'src/**/*' -e ts,tsx --exec npm run ts-start",
+    "create-schema": "graphql get-schema",
+    "create-types": "graphql-schema-typescript --namespace=GQL --global=true --typePrefix='' generate-ts --output='src/graphql/__typedefs/graphqlTypes.d.ts' 'src/graphql/__typedefs'",
     "test:integration": "npm run build && NODE_ENV=test mocha -r ts-node/register -r tsconfig-paths/register --exit --recursive dist/tests/integration",
     "lint": "tslint -c tslint.json 'src/**/*.ts'"
   },
@@ -19,6 +21,7 @@
     "REST",
     "typescript",
     "node.js",
+    "graphql",
     "koa.js"
   ],
   "author": "Melnykov Vitalii (fsoulmonk@gmail.com)",
@@ -46,7 +49,9 @@
     "mz": "^2.7.0",
     "pg": "^7.11.0",
     "pg-hstore": "^2.3.2",
+    "pg-promise": "^8.7.2",
     "pino": "^5.12.5",
+    "postgraphile": "^4.4.0",
     "sequelize": "^5.8.6",
     "uuid": "^3.3.2",
     "winston": "^3.2.1"
@@ -62,6 +67,7 @@
     "@types/koa-bodyparser": "^4.2.2",
     "@types/koa-logger": "^3.1.1",
     "@types/koa-router": "^7.0.40",
+    "@types/lodash": "^4.14.126",
     "@types/mocha": "^5.2.6",
     "@types/node": "^12.0.2",
     "@types/sinon": "^7.0.11",

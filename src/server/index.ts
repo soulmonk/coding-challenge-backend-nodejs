@@ -1,8 +1,11 @@
 import {logger} from '@services/logger';
 import {Server} from 'http';
 import * as Koa from 'koa';
+import {Pool} from 'pg';
+import {postgraphile} from 'postgraphile';
 import {TServerConfiguration} from './configuration';
 import {RestServer} from './rest';
+import {GraphqlServer} from './graphql';
 
 export class ApplicationServer {
   private readonly _app: Koa;
@@ -48,5 +51,18 @@ export class ApplicationServer {
 
   private init() {
     RestServer(this._app);
+
+    GraphqlServer(this._app);
+
+    // temporary
+    const pgPool = new Pool({
+      database: 'challenge',
+      user: 'challenge',
+      password: 'toor',
+      host: '127.0.0.1'
+    });
+    this._app.use(postgraphile(pgPool, null, {
+      graphqlRoute: '/postgraphile_graphql'
+    }));
   }
 }
