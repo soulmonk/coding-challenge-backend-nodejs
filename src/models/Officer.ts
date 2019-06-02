@@ -2,16 +2,16 @@ import {Association, DataTypes, HasOneGetAssociationMixin, HasOneSetAssociationM
 import {Case} from './Case';
 import {IModelInitialization} from './model-initialization';
 
-export interface IPolice {
+export interface IOfficer {
   id: number;
   fullName: string;
   readonly case?: Case;
   caseId?: number;
 }
 
-export class Police extends Model implements IPolice {
+export class Officer extends Model implements IOfficer {
   public static associations: {
-    case: Association<Police, Case>;
+    case: Association<Officer, Case>;
   };
 
   public id!: number; // Note that the `null assertion` `!` is required in strict mode.
@@ -27,9 +27,9 @@ export class Police extends Model implements IPolice {
 
 export const initialization: IModelInitialization = {
   associate(): void {
-    Police.hasOne(Case, {
+    Officer.hasOne(Case, {
       foreignKey: {
-        name: 'policeId',
+        name: 'officerId',
         allowNull: true
       },
       as: 'case'
@@ -48,11 +48,11 @@ export const initialization: IModelInitialization = {
     };
 
     const options = {
-      tableName: 'polices',
+      tableName: 'officers',
       sequelize,
       timestamps: false
     };
 
-    Police.init(attributes, options);
+    Officer.init(attributes, options);
   }
 };

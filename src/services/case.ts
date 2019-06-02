@@ -17,7 +17,7 @@ export class CaseService {
       createdAt: record.createdAt,
       updatedAt: record.updatedAt,
 
-      policeOfficerName: record.policeOfficerName || (record.police && record.police.fullName) || null
+      policeOfficerName: record.policeOfficerName || (record.officer && record.officer.fullName) || null
     };
   }
 
@@ -36,22 +36,22 @@ export class CaseService {
     if (query.resolved) {
       where.resolved = query.resolved;
     }
-    if (query.policeId !== undefined) {
-      if (query.policeId === '') {
-        where.policeId = {[Op.eq]: null};
+    if (query.officerId !== undefined) {
+      if (query.officerId === '') {
+        where.officerId = {[Op.eq]: null};
       } else {
-        where.policeId = query.policeId;
+        where.officerId = query.officerId;
       }
     }
 
-    const records = await Case.findAll({where, include: [Case.associations.police]});
+    const records = await Case.findAll({where, include: [Case.associations.officer]});
     return records.map(this.toPublic);
   }
 
   static async create(data: ICase): Promise<ICase> {
     const record = await Case.create(data);
 
-    const availablePoliceOfficer = await AssignService.findAvailablePolice();
+    const availablePoliceOfficer = await AssignService.findAvailableOfficer();
     if (availablePoliceOfficer) {
       availablePoliceOfficer.setCase(record);
       record.policeOfficerName = availablePoliceOfficer.fullName;
@@ -66,13 +66,13 @@ export class CaseService {
       return false;
     }
 
-    const assignPoliceOfficer = await record.getPolice();
+    const assignPoliceOfficer = await record.getOfficer();
     if (!assignPoliceOfficer) {
       throw new Error('Could not resolve case without police officer');
     }
 
     record.resolved = true;
-    record.policeId = null; // todo do we need for history?
+    record.officerId = null; // todo do we need for history?
 
     const saved = await record.save();
 

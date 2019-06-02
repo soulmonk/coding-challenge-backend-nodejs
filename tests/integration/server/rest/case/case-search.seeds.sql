@@ -1,9 +1,9 @@
-INSERT INTO polices (id, "fullName")
+INSERT INTO officers (id, "fullName")
 VALUES (1, 'test1'),
        (2, 'test2'),
        (3, 'test3');
 
-INSERT INTO cases (id, "type", "ownerName", "licenseNumber", "color", "theftDescription", "date", "policeId",
+INSERT INTO cases (id, "type", "ownerName", "licenseNumber", "color", "theftDescription", "date", "officerId",
                    "resolved", "createdAt", "updatedAt")
 values (1, 'Mountain', 'owner1', '10ab01', 'black', 'some description 1',
         now() - interval '1 day', 1, false, now(), now()),

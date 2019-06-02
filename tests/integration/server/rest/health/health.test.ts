@@ -1,14 +1,12 @@
-import {globalHooks} from '@tests/integration/server/global-hooks';
-import {server} from '@tests/integration/server/server-utils';
 import {expect} from 'chai';
 import * as request from 'supertest';
+import {server} from '../../server-utils';
 
 describe('health api', () => {
-  globalHooks();
 
   it('should return 200 ok', async () => {
     const res: request.Response = await server
-      .get('/live')
+      .get('/api/live')
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
       .expect(200);

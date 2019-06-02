@@ -2,7 +2,7 @@ import {Sequelize, SyncOptions} from 'sequelize';
 import {initialization as CaseInit} from './Case';
 import {TDBConfiguration} from './configuration';
 import {IModelInitialization} from './model-initialization';
-import {initialization as PoliceInit} from './Police';
+import {initialization as OfficerInit} from './Officer';
 
 let dbConnection: DBConnection = null;
 
@@ -40,7 +40,7 @@ export class DBConnection {
 
   private createModels() {
     const models = [
-      PoliceInit,
+      OfficerInit,
       CaseInit
     ];
 

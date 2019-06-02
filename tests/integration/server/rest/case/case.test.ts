@@ -1,11 +1,11 @@
 import {Case, TBikeType} from '@models/Case';
-import {Police} from '@models/Police';
-import {dbConnection, loadSeeds} from '@tests/integration/server/database-utils';
-import {server} from '@tests/integration/server/server-utils';
+import {Officer} from '@models/Officer';
 import {expect} from 'chai';
+import * as config from 'config';
 import {join} from 'path';
 import {Response} from 'superagent';
-import {globalHooks} from '../global-hooks';
+import {loadSeeds, schemaMigration} from '../../database-utils';
+import {server} from '../../server-utils';
 
 function buildSearchCase(filterName: string, query: object, expectedLength: number, expected?: (res: Response) => void) {
   it(`should filter by ${filterName}`, async () => {
@@ -25,17 +25,19 @@ function buildSearchCase(filterName: string, query: object, expectedLength: numb
 }
 
 describe('Case api', () => {
-  globalHooks();
+  before(async () => {
+    await schemaMigration();
+  });
 
   describe('#list', () => {
 
     before(async () => {
       // load seeds
-      return loadSeeds(join(__dirname, 'case-search.seeds.sql'));
+      return loadSeeds(join(config.get('root'), '/tests/integration/server/rest/case/case-search.seeds.sql'));
     });
 
     after(async () => {
-      await dbConnection.sync({force: true});
+      await schemaMigration();
     });
 
     it('should return list', async () => {
@@ -84,15 +86,11 @@ describe('Case api', () => {
         expect(res.body.data).to.have.property('length', 1);
       });
 
-      it('should filter by officer', async () => {
-        throw new Error('Not implemented');
-      });
-
       buildSearchCase('owner name', {ownerName: 'owner1'}, 1);
       buildSearchCase('owner name, partial', {ownerName: 'John'}, 2);
       buildSearchCase('type', {type: 'TimeTrial'}, 0);
-      buildSearchCase('unassigned', {policeId: ''}, 6);
-      buildSearchCase('by police officer id', {policeId: 2}, 1, res => {
+      buildSearchCase('unassigned', {officerId: ''}, 6);
+      buildSearchCase('by police officer id', {officerId: 2}, 1, res => {
         expect(res.body.data[0]).to.have.property('policeOfficerName', 'test2');
       });
       buildSearchCase('owner name and type', {ownerName: 'John', type: 'Road'}, 1);
@@ -101,7 +99,7 @@ describe('Case api', () => {
 
   describe('#report a stolen bike', () => {
     afterEach(async () => {
-      await dbConnection.sync({force: true});
+      await schemaMigration();
     });
 
     describe('validation', () => {
@@ -181,7 +179,7 @@ describe('Case api', () => {
     });
 
     it('should auto-assign case', async () => {
-      const policeOfficer = await Police.create({fullName: 'test1'});
+      const policeOfficer = await Officer.create({fullName: 'test1'});
 
       const data = {
         ownerName: 'John Doe',
@@ -210,11 +208,11 @@ describe('Case api', () => {
 
   describe('#resolve', () => {
     afterEach(async () => {
-      await dbConnection.sync({force: true});
+      await schemaMigration();
     });
 
     it('should resolve case', async () => {
-      const policeOfficer = await Police.create({fullName: 'test1'});
+      const policeOfficer = await Officer.create({fullName: 'test1'});
       const caseModel = await Case.create({
         ownerName: 'John Doe',
         licenseNumber: '123abc456',
@@ -258,7 +256,7 @@ describe('Case api', () => {
     });
 
     it('should auto-assign case', async () => {
-      const policeOfficer = await Police.create({fullName: 'test1'});
+      const policeOfficer = await Officer.create({fullName: 'test1'});
       const caseModel = await Case.create({
         ownerName: 'John Doe',
         licenseNumber: '123abc456',
@@ -285,8 +283,8 @@ describe('Case api', () => {
 
       expect(res.body).to.have.property('data');
 
-      const assignedCase = await Case.findByPk(unassignedCase.id, {include: [Case.associations.police]});
-      expect(assignedCase.police).to.have.property('id', policeOfficer.id);
+      const assignedCase = await Case.findByPk(unassignedCase.id, {include: [Case.associations.officer]});
+      expect(assignedCase.officer).to.have.property('id', policeOfficer.id);
     });
   });
 });

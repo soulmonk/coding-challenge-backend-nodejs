@@ -3,6 +3,8 @@ module.exports = {
     port: 53200
   },
   db: {
-    logging: false
+    options: {
+      logging: false
+    }
   }
 };

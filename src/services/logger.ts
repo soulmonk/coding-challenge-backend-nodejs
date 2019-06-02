@@ -20,6 +20,7 @@ const options: LoggerOptions = {
   exitOnError: false,
   level: 'debug',
   transports: [
+    // todo levels
     new transports.File({
       filename: join(config.get('root'), 'logs', 'logs.log'),
       zippedArchive: true,
@@ -32,7 +33,7 @@ const options: LoggerOptions = {
 
 const logger: Logger = createLogger(options);
 
-if (process.env.NODE_ENV !== 'prod') {
+if (process.env.NODE_ENV !== 'prod') { // todo in config
 
   logger.add(new transports.Console({
     format: combine(

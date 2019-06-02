@@ -1,9 +1,9 @@
-import {IPolice, Police} from '@models/Police';
+import {IOfficer, Officer} from '@models/Officer';
 import {AssignService} from './assign';
 import {logger} from './logger';
 
-export class PoliceService {
-  static toPublic(record: IPolice) {
+export class OfficerService {
+  static toPublic(record: IOfficer) {
     return {
       id: record.id,
       fullName: record.fullName,
@@ -11,10 +11,10 @@ export class PoliceService {
     };
   }
 
-  static async create(data: IPolice) {
-    logger.debug('Create model police: ', data);
+  static async create(data: IOfficer) {
+    logger.debug('Create model officer: ', data);
 
-    const record = await Police.create(data);
+    const record = await Officer.create(data);
 
     const availableCase = await AssignService.findUnassignedCase();
 
@@ -23,30 +23,30 @@ export class PoliceService {
       record.caseId = availableCase.id; // todo update "case" after set
     }
 
-    return PoliceService.toPublic(record);
+    return OfficerService.toPublic(record);
   }
 
   static async list() {
-    const records = await Police.findAll({
-      include: [Police.associations.case],
+    const records = await Officer.findAll({
+      include: [Officer.associations.case],
       order: [['id', 'ASC']] // todo do I need this?
     });
-    return records.map(PoliceService.toPublic);
+    return records.map(OfficerService.toPublic);
   }
 
   static async delete(id: number) {
     // todo what better: one query with join or two one if needed second?
-    const police = await Police.findByPk(id);
+    const officer = await Officer.findByPk(id);
 
-    if (!police) {
+    if (!officer) {
       return false;
     }
 
-    const policeCase = await police.getCase();
-    if (policeCase) {
-      throw new Error('Police officer has a case: ' + policeCase.id);
+    const assignedCase = await officer.getCase();
+    if (assignedCase) {
+      throw new Error('Police officer has a case: ' + assignedCase.id);
     }
 
-    return police.destroy();
+    return officer.destroy();
   }
 }

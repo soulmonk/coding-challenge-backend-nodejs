@@ -6,17 +6,19 @@ import * as validators from './validators';
 export function routes(main: Router): Router {
   const router = new Router();
 
-  router.get('/', controller.list);
+  router.get('/',
+    validate({request: {query: validators.list}}),
+    controller.list);
 
   router.post('/',
     validate({request: {body: validators.create}}),
     controller.create);
 
-  router.delete('/:id',
-    validate({params: validators.remove}),
-    controller.remove);
+  router.put('/:id',
+    validate({params: validators.resolve}),
+    controller.resolve);
 
-  main.use('/api/police', router.routes());
+  main.use('/case', router.routes());
 
   return main;
 }

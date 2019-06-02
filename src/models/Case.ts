@@ -1,6 +1,6 @@
 import {BelongsTo, BelongsToGetAssociationMixin, DataTypes, Model, Sequelize} from 'sequelize';
 import {IModelInitialization} from './model-initialization';
-import {Police} from './Police';
+import {Officer} from './Officer';
 
 // TODO split files: entity, model, initialization
 
@@ -22,7 +22,7 @@ export enum TBikeType {
 
 export interface ICase {
   id: number;
-  policeId?: number;
+  officerId?: number;
   type: TBikeType;
   ownerName: string;
   licenseNumber: string;
@@ -32,7 +32,7 @@ export interface ICase {
   date: Date;
   resolved: boolean;
 
-  police?: Police;
+  officer?: Officer;
 
   createdAt: Date;
   updatedAt: Date;
@@ -40,7 +40,7 @@ export interface ICase {
 
 export class Case extends Model implements ICase {
   public static associations: {
-    police: BelongsTo<Police>;
+    officer: BelongsTo<Officer>;
   };
 
   public id!: number; // Note that the `null assertion` `!` is required in strict mode.
@@ -53,8 +53,8 @@ export class Case extends Model implements ICase {
 
   public resolved = false;
 
-  public policeId!: number;
-  public policeOfficerName?: string; // -> police.fullName // todo better policeId to public
+  public officerId!: number;
+  public policeOfficerName?: string; // -> officer.fullName // todo better officerId to public
 
   public type: TBikeType;
 
@@ -63,19 +63,19 @@ export class Case extends Model implements ICase {
   public readonly updatedAt!: Date;
 
   // these will not exist until `Model.init` was called.
-  public getPolice!: BelongsToGetAssociationMixin<Police>; // Note the null assertions!
+  public getOfficer!: BelongsToGetAssociationMixin<Officer>; // Note the null assertions!
 
-  public readonly police!: Police;
+  public readonly officer!: Officer;
 }
 
 export const initialization: IModelInitialization = {
   associate(): void {
-    Case.belongsTo(Police, {
+    Case.belongsTo(Officer, {
       foreignKey: {
-        name: 'policeId',
+        name: 'officerId',
         allowNull: true
       },
-      as: 'police'
+      as: 'officer'
     });
   },
   initialize(sequelize: Sequelize) {
@@ -93,9 +93,10 @@ export const initialization: IModelInitialization = {
         type: DataTypes.STRING,
         require: true,
       },
-      licenseNumber: { // todo unique?
+      licenseNumber: {
         type: DataTypes.STRING,
         require: true,
+        unique: true
       },
       color: {
         type: DataTypes.STRING,

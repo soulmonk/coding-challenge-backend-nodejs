@@ -7,7 +7,7 @@ export const list: Joi.SchemaMap = { // TODO min values
   type: Joi.string().valid(BikeTypes),
   ownerName: Joi.string(),
   color: Joi.string(),
-  policeId: [Joi.number(), Joi.allow('')],
+  officerId: [Joi.number(), Joi.allow('')],
   resolved: Joi.boolean(),
   // todo theft description ?
 };
