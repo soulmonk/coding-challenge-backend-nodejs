@@ -1,7 +1,3 @@
-**Base Url**
-----
-  http://3.213.157.50
-  
 ## **List Police officers**
   Returns json data about police officers.
 
